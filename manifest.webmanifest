@@ -1,0 +1,16 @@
+{
+  "name": "Mech-Freunde – Mein erster Roboter",
+  "short_name": "Mech-Freunde",
+  "description": "Baue deinen bunten Mech und spiele in der Trainingsarena.",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#eaf2ff",
+  "theme_color": "#7565e8",
+  "lang": "de",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
