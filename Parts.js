@@ -37,7 +37,8 @@ export const COLORS = [
   { id: 'blue', label: 'Blau', primary: '#6d9afa', light: '#c3ddff', dark: '#4d67db' },
   { id: 'orange', label: 'Orange', primary: '#ffad53', light: '#ffe29b', dark: '#d77537' },
   { id: 'purple', label: 'Lila', primary: '#ac85f4', light: '#decfff', dark: '#785aca' },
-  { id: 'lime', label: 'Limette', primary: '#96c953', light: '#dcffa0', dark: '#608d31' }
+  { id: 'lime', label: 'Limette', primary: '#96c953', light: '#dcffa0', dark: '#608d31' },
+  { id: 'red', label: 'Rot', primary: '#df4343', light: '#ffb2b2', dark: '#9f2323' }
 ];
 
 export const STARTER_SELECTION = Object.freeze({

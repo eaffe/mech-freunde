@@ -38,3 +38,9 @@ Diese Dateien sind absichtlich **alle im Hauptordner**, damit das Hochladen vom 
 - `Parts.js` – erweiterbarer Teilekatalog
 
 Für Online-Multiplayer später: separate Server-Validierung, damit Punkte und freigeschaltete Teile nicht vom Handy gefälscht werden können. Kein offener Chat oder öffentliche Benutzerprofile für Kinder vorsehen.
+
+
+## v0.2
+- Mech-Optik kantiger und heroischer gestaltet
+- neue Farbe Rot hinzugefügt
+- leichte Kampfanimationen und Monitor-Effekte in der Trainingsarena

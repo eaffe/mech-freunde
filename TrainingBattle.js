@@ -12,7 +12,7 @@ export class TrainingBattle {
     this.guarding = false;
     this.turn = 'player';
     this.winner = null;
-    this.lastEvent = { icon: '👋', message: 'Los geht’s!' };
+    this.lastEvent = { icon: '⚔️', message: 'System bereit!', actor: 'system', kind: 'start', damage: 0 };
   }
 
   get finished() { return Boolean(this.winner); }
@@ -22,16 +22,21 @@ export class TrainingBattle {
     if (action === 'shield') {
       this.guarding = true;
       this.turn = 'bot';
-      this.lastEvent = { icon: '🛡️', message: 'Super Schild!' };
+      this.lastEvent = { icon: '🛡️', message: 'Schild aktiv!', actor: 'player', kind: 'guard', damage: 0 };
       return this.lastEvent;
     }
     if (action !== 'attack') return null;
+
     const hit = this.rng() >= 0.12;
     const damage = hit ? Math.max(1, Math.round(this.attack * (0.65 + this.rng() * 0.5))) : 0;
     this.botHp = Math.max(0, this.botHp - damage);
-    this.lastEvent = hit ? { icon: '💥', message: `${damage} Treffer!` } : { icon: '💨', message: 'Daneben!' };
+    this.lastEvent = hit
+      ? { icon: '💥', message: `${damage} Treffer!`, actor: 'player', kind: 'hit', damage }
+      : { icon: '💨', message: 'Daneben!', actor: 'player', kind: 'miss', damage: 0 };
+
     if (this.botHp === 0) this.winner = 'player';
     else this.turn = 'bot';
+
     return this.lastEvent;
   }
 
@@ -42,9 +47,13 @@ export class TrainingBattle {
     const damage = hit ? Math.max(1, raw - this.armor - (this.guarding ? 12 : 0)) : 0;
     this.playerHp = Math.max(0, this.playerHp - damage);
     this.guarding = false;
-    this.lastEvent = hit ? { icon: '💢', message: `Roboter: ${damage}` } : { icon: '💨', message: 'Roboter daneben!' };
+    this.lastEvent = hit
+      ? { icon: '💢', message: `Bot: ${damage}`, actor: 'bot', kind: 'hit', damage }
+      : { icon: '💨', message: 'Bot daneben!', actor: 'bot', kind: 'miss', damage: 0 };
+
     if (this.playerHp === 0) this.winner = 'bot';
     else this.turn = 'player';
+
     return this.lastEvent;
   }
 }

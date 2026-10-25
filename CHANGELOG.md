@@ -7,3 +7,9 @@
 - Automatisches Speichern in IndexedDB
 - Installierbare Offline-PWA für GitHub Pages
 - Objektorientierte Klassenstruktur ohne React oder Buildprozess
+
+
+## v0.2
+- Mech-Optik kantiger und heroischer gestaltet
+- neue Farbe Rot hinzugefügt
+- leichte Kampfanimationen und Monitor-Effekte in der Trainingsarena

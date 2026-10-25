@@ -17,7 +17,7 @@ class MechFriendsApp {
     this.toastTimer = null;
     this.rewardApplied = false;
     this.sound = false;
-    this.enemy = new Mech({ color: 'orange', head: 'visor', body: 'shield', arms: 'laser', legs: 'tracks' });
+    this.enemy = new Mech({ color: 'red', head: 'visor', body: 'shield', arms: 'laser', legs: 'tracks' });
     this.saving = Promise.resolve();
   }
 
@@ -178,6 +178,51 @@ class MechFriendsApp {
     </main>`;
   }
 
+
+  battleFxState() {
+    const event = this.battle?.lastEvent || {};
+    const playerClass = event.actor === 'bot' && event.kind === 'hit'
+      ? 'is-hit'
+      : event.actor === 'player' && event.kind === 'guard'
+        ? 'is-guard'
+        : event.actor === 'bot' && event.kind === 'miss'
+          ? 'is-safe'
+          : '';
+    const botClass = event.actor === 'player' && event.kind === 'hit'
+      ? 'is-hit'
+      : event.actor === 'player' && event.kind === 'miss'
+        ? 'is-safe'
+        : '';
+
+    const monitor = event.actor === 'player' && event.kind === 'hit'
+      ? `<div class="monitor-fx shot-right"></div><div class="monitor-burst right">-${event.damage}</div>`
+      : event.actor === 'bot' && event.kind === 'hit'
+        ? `<div class="monitor-fx shot-left"></div><div class="monitor-burst left">-${event.damage}</div>`
+        : event.actor === 'player' && event.kind === 'guard'
+          ? `<div class="monitor-guard left">🛡️</div>`
+          : event.actor === 'player' && event.kind === 'miss'
+            ? `<div class="monitor-miss right">daneben</div>`
+            : event.actor === 'bot' && event.kind === 'miss'
+              ? `<div class="monitor-miss left">daneben</div>`
+              : '';
+
+    const playerBadge = event.actor === 'bot' && event.kind === 'hit'
+      ? `<div class="battle-badge damage">-${event.damage}</div>`
+      : event.actor === 'player' && event.kind === 'guard'
+        ? `<div class="battle-badge guard">BLOCK</div>`
+        : event.actor === 'bot' && event.kind === 'miss'
+          ? `<div class="battle-badge safe">OK</div>`
+          : '';
+
+    const botBadge = event.actor === 'player' && event.kind === 'hit'
+      ? `<div class="battle-badge damage">-${event.damage}</div>`
+      : event.actor === 'player' && event.kind === 'miss'
+        ? `<div class="battle-badge safe">MISS</div>`
+        : '';
+
+    return { playerClass, botClass, playerBadge, botBadge, monitor };
+  }
+
   trainingMarkup() {
     const b = this.battle;
     if (!b) return '';
@@ -185,37 +230,39 @@ class MechFriendsApp {
     const bot = Math.max(0, Math.round(b.botHp / b.maxBotHp * 100));
     const completed = b.finished;
     const blocked = b.turn !== 'player' || completed;
+    const fx = this.battleFxState();
     const resultMarkup = completed ? `<section class="victory" aria-live="polite">
-        <div class="emoji">${b.winner === 'player' ? '🏆🎉' : '🤗💜'}</div>
-        <h2>${b.winner === 'player' ? 'Super gemacht!' : 'Nochmal üben!'}</h2>
+        <div class="emoji">${b.winner === 'player' ? '🏆⚡' : '🤖💜'}</div>
+        <h2>${b.winner === 'player' ? 'Gewonnen!' : 'Weiter trainieren!'}</h2>
         <p>⭐ +${b.reward || 0}</p>
         <button class="primary-action" data-action="again" aria-label="Noch einmal trainieren"><span class="action-icon">🔁</span> Nochmal!</button>
       </section>` : `<div class="battle-message" role="status" aria-live="polite"><span>${b.lastEvent.icon}</span>${b.lastEvent.message}</div>
       <div class="battle-actions">
         <button class="battle-button attack" data-action="attack" ${blocked ? 'disabled' : ''} aria-label="Angreifen">
-          <span class="battle-icon">💥</span><span>Angriff!</span></button>
+          <span class="battle-icon">⚔️</span><span>Angriff</span></button>
         <button class="battle-button shield" data-action="shield" ${blocked ? 'disabled' : ''} aria-label="Mit Schild schützen">
-          <span class="battle-icon">🛡️</span><span>Schild!</span></button>
+          <span class="battle-icon">🛡️</span><span>Schild</span></button>
       </div>`;
     return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE</span></div>${this.starBank()}</header>
       <main>
         <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Baukasten"><span>⬅️</span> Hangar</button>
           <div class="round-label">🎯 Training</div></div>
-        <h1 class="section-title">🥊 Übungs-Arena</h1>
+        <h1 class="section-title">⚔️ Trainings-Arena</h1>
         <section class="arena" aria-label="Roboterduell">
+          <div class="arena-monitor" aria-hidden="true"><div class="scanline"></div>${fx.monitor}</div>
           <div class="fighters">
-            <div class="fighter-card"><div class="fighter-name">💚 Mein Mech</div>
-              <div class="fighter-visual">${MechRenderer.draw(this.pilot.mech)}</div>
+            <div class="fighter-card"><div class="fighter-name">🟢 Mein Mech</div>
+              <div class="fighter-visual ${fx.playerClass}">${MechRenderer.draw(this.pilot.mech)}${fx.playerBadge}</div>
               <div class="hp-track" aria-label="Eigene Energie ${me} Prozent"><div class="hp-fill" style="--pct:${me}%"></div></div>
               <div class="hp-number">❤️ ${b.playerHp} / ${b.maxPlayerHp}</div></div>
-            <div class="fighter-card"><div class="fighter-name">🧡 Übungsbot</div>
-              <div class="fighter-visual enemy">${MechRenderer.draw(this.enemy, { label: 'Übungsroboter' })}</div>
+            <div class="fighter-card"><div class="fighter-name">🔴 Trainings-Bot</div>
+              <div class="fighter-visual enemy ${fx.botClass}">${MechRenderer.draw(this.enemy, { label: 'Trainingsroboter' })}${fx.botBadge}</div>
               <div class="hp-track" aria-label="Gegnerische Energie ${bot} Prozent"><div class="hp-fill enemy" style="--pct:${bot}%"></div></div>
               <div class="hp-number">❤️ ${b.botHp} / ${b.maxBotHp}</div></div>
           </div>
         </section>
         ${resultMarkup}
-        <p class="small-hint">👆 ${blocked && !completed ? 'Der Übungsbot ist dran …' : 'Tippe auf ein Symbol!'}</p>
+        <p class="small-hint">👆 ${blocked && !completed ? 'Der Trainings-Bot zieht gerade …' : 'Tippe auf Angriff oder Schild!'}</p>
       </main>`;
   }
 
