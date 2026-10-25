@@ -1,4 +1,4 @@
-import { CATEGORIES, PARTS, COLORS } from './Parts.js';
+import { CATEGORIES, PARTS, COLORS, STYLES } from './Parts.js';
 import { Mech } from './Mech.js';
 import { MechRenderer } from './Renderer.js';
 import { Pilot } from './Pilot.js';
@@ -100,6 +100,13 @@ class MechFriendsApp {
       this.pilot.mech.equip('color', button.dataset.value);
       this.save(); this.render(); this.speak('Neue Farbe!');
     }
+    if (action === 'style') {
+      const choice = STYLES.find(style => style.id === button.dataset.value);
+      if (choice) {
+        this.pilot.mech.equip('style', choice.id);
+        this.save(); this.render(); this.speak(choice.label);
+      }
+    }
     if (action === 'train') this.startTraining();
     if (action === 'back') this.backToHangar();
     if (action === 'attack' || action === 'shield') this.playTurn(action);
@@ -122,6 +129,16 @@ class MechFriendsApp {
   hangarMarkup() {
     const category = CATEGORIES.find(cat => cat.id === this.category) || CATEGORIES[0];
     const stats = this.pilot.mech.stats;
+    const styleCards = STYLES.map(style => {
+      const selected = this.pilot.mech.selection.style === style.id;
+      return `<button class="style-card style-${style.id} ${selected ? 'is-active' : ''}"
+        data-action="style" data-value="${style.id}" aria-label="Spielstil ${style.label}"
+        aria-pressed="${selected}">
+          <span class="style-symbol">${style.icon}</span>
+          <span class="style-title">${style.label}</span>
+          ${selected ? '<span class="style-check" aria-hidden="true">✓</span>' : ''}
+        </button>`;
+    }).join('');
     const tabs = CATEGORIES.map(cat => `
       <button class="category-tab ${cat.id === this.category ? 'is-active' : ''}"
         data-action="category" data-value="${cat.id}" aria-label="${cat.label}" aria-pressed="${cat.id === this.category}">
@@ -153,11 +170,13 @@ class MechFriendsApp {
       ${this.starBank()}
     </header>
     <main>
-      <h1 class="section-title">🛠️ Bau deinen Mech!</h1>
-      <div class="hangar-stage" aria-label="Dein selbstgebauter Roboter">
+      <h1 class="section-title">⚙️ Mein Mech</h1>
+      <div class="hangar-stage" aria-label="Große Vorschau deines Mechs">
         <span class="stage-deco deco-one">✨</span><span class="stage-deco deco-two">🌟</span><span class="stage-deco deco-three">⚙️</span>
         ${MechRenderer.draw(this.pilot.mech)}
+        <div class="stage-floor" aria-hidden="true"></div>
       </div>
+      <div class="style-row" role="group" aria-label="Spielstil auswählen">${styleCards}</div>
       <div class="stats" aria-label="Mechwerte">
         <div class="stat" title="Lebenspunkte"><span class="stat-icon">❤️</span>${stats.hp}</div>
         <div class="stat" title="Stärke"><span class="stat-icon">⚡</span>${stats.attack}</div>

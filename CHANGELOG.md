@@ -1,15 +1,9 @@
-## v0.1 – erster spielbarer Prototyp
+# Änderungen
 
-- Große, bebilderte Auswahl für Kopf, Körper, Arme und Beine
-- Sechs Farben und dynamisch gezeichnete Mechs (SVG)
-- Einzelspielertraining mit Angriff, Schild und freundlichem Übungsroboter
-- Trainingssterne zum lokalen Freischalten von Teilen
-- Automatisches Speichern in IndexedDB
-- Installierbare Offline-PWA für GitHub Pages
-- Objektorientierte Klassenstruktur ohne React oder Buildprozess
-
-
-## v0.2
-- Mech-Optik kantiger und heroischer gestaltet
-- neue Farbe Rot hinzugefügt
-- leichte Kampfanimationen und Monitor-Effekte in der Trainingsarena
+## v0.3
+- Große Mech-Bühne und größere Bauteilbilder.
+- Samurai-Helm, Klingen-Arme und Schulterpanzer als freischaltbare Teile.
+- Drei kostenlose Spielstile Leicht, Stark, Schnell.
+- Spielstile beeinflussen Hülle, Angriff, Rüstung und Ausweichchance.
+- Spielstände aus v0.2 bleiben kompatibel.
+- Neue Service-Worker-Cache-Version.

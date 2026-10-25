@@ -219,3 +219,48 @@ button:focus-visible { outline: 3px solid #48d5ff; outline-offset: 3px; }
   .hangar-stage > .mech-picture, .scanline { animation:none; }
   *, *:before, *:after { scroll-behavior:auto!important; transition:none!important; animation:none!important; }
 }
+
+/* v0.3: größere Maschinenbühne und bilderbasierte Spielstil-Auswahl */
+.hangar-stage {
+  min-height: 420px;
+  height: clamp(420px, 61vh, 580px);
+  border-color: #9cbfff;
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 50% 42%, #4768a066, transparent 56%),
+    linear-gradient(180deg,#1b2646 0%,#202f58 55%,#101928 55%,#0b1121 100%);
+}
+.hangar-stage > .mech-picture {
+  position:relative; z-index:1; width:min(100%,485px); height:100%;
+  margin:auto; padding:0;
+  filter: drop-shadow(0 13px 18px #050a16a6);
+}
+.hangar-stage .stage-floor {
+  position:absolute; z-index:0; left:15%; right:15%; bottom:8%; height:13%;
+  border:3px solid #79deff70; border-radius:50%; box-shadow:0 0 24px #49d2ff42;
+  background:radial-gradient(ellipse,#94d9ff25,transparent 70%);
+  pointer-events:none;
+}
+.style-row { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin:13px 0 10px; }
+.style-card {
+  position:relative; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:2px; min-height:100px; padding:9px 4px 7px;
+  color:#eaf3ff; background:linear-gradient(180deg,#27395e,#16233e);
+  border:2px solid #657daf; border-radius:16px; box-shadow:0 4px 0 #111a30;
+  font-weight:900;
+}
+.style-card.is-active { border-color:#6de4ff; background:linear-gradient(180deg,#255e75,#183847); box-shadow:0 4px 0 #0b2433; }
+.style-symbol { font-size:39px; line-height:1.1; filter:drop-shadow(0 4px 4px #0005); }
+.style-title { font-size:14px; letter-spacing:.1px; }
+.style-check { position:absolute; top:5px; right:8px; font-size:16px; color:#94ffb9; }
+.style-card:active { transform:translateY(2px); }
+.part-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.part-card { min-height:151px; }
+.part-art { height:96px; }
+@media (min-width:530px) {
+  .hangar-stage { height:560px; }
+  .part-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .part-card { min-height:152px; }
+  .part-art { height:98px; }
+}
+@media (max-height:640px) { .hangar-stage { min-height:385px; height:385px; } }

@@ -43,7 +43,20 @@ export class MechRenderer {
         <path d="M106 327H168M194 327H257" stroke="${l}" stroke-width="6" stroke-linecap="round"/>
       </g>`;
 
-    const armArt = arms === 'rockets'
+    const armArt = arms === 'blades'
+      ? `
+      <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
+        <path d="M71 143H113L110 221H75Z" fill="${d}"/>
+        <path d="M247 143H289L285 221H250Z" fill="${d}"/>
+        <path d="M65 207L108 207L119 248L89 266L64 247Z" fill="${p}"/>
+        <path d="M252 207L295 207L296 247L271 266L241 248Z" fill="${p}"/>
+        <path d="M77 247L49 259L28 290L63 280L99 259Z" fill="${metal}"/>
+        <path d="M283 247L311 259L332 290L297 280L261 259Z" fill="${metal}"/>
+        <path d="M49 259L28 290L63 280" fill="none" stroke="${glow}" stroke-width="5"/>
+        <path d="M311 259L332 290L297 280" fill="none" stroke="${glow}" stroke-width="5"/>
+        <path d="M78 219L105 233M255 233L282 219" stroke="${l}" stroke-width="7"/>
+      </g>`
+      : arms === 'rockets'
       ? `
       <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
         <path d="M52 146H112L114 241H58Z" fill="${d}"/><path d="M248 146H308L302 241H246Z" fill="${d}"/>
@@ -69,13 +82,31 @@ export class MechRenderer {
         <path d="M76 238L55 248M91 250L73 266M283 250L301 266M270 238L289 248" stroke="${l}" stroke-width="5" stroke-linecap="round"/>
       </g>`;
 
-    const chestMark = body === 'shield'
+    const chestMark = body === 'shoulders'
+      ? `<g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
+          <path d="M105 137L139 124L157 151L148 190L101 180L85 153Z" fill="${p}"/>
+          <path d="M255 137L221 124L203 151L212 190L259 180L275 153Z" fill="${p}"/>
+          <path d="M96 151L132 141M228 141L264 151" stroke="${l}" stroke-width="7"/>
+          <path d="M180 182L210 196L202 237L180 249L158 237L150 196Z" fill="${steel}"/>
+          <path d="M180 193V237M164 212H196" stroke="${glow}" stroke-width="8" stroke-linecap="round"/>
+        </g>`
+      : body === 'shield'
       ? `<path d="M180 173L214 185L210 225Q198 243 180 253Q162 243 150 225L146 185Z" fill="#eff7ff" stroke="${outline}" stroke-width="5"/><path d="M180 187V236M157 209H203" stroke="${d}" stroke-width="9" stroke-linecap="round"/>`
       : body === 'bolt'
         ? `<polygon points="191,174 163,210 182,210 171,246 205,202 186,202" fill="#ffe168" stroke="#ffb739" stroke-width="4"/><circle cx="180" cy="212" r="38" fill="none" stroke="${l}" stroke-width="6"/>`
         : `<g><path d="M180 251L153 238L145 212L161 187H199L215 212L207 238Z" fill="#ffd0df" stroke="${outline}" stroke-width="5"/><path d="M164 214Q171 205 180 213Q189 205 196 214Q196 230 180 239Q164 230 164 214Z" fill="#ff688f"/></g>`;
 
-    const headArt = head === 'visor'
+    const headArt = head === 'samurai'
+      ? `<g stroke="${outline}" stroke-width="6" stroke-linejoin="round">
+          <path d="M125 66L104 25L140 41L159 26L180 48L201 26L220 41L256 25L235 66Z" fill="${d}"/>
+          <path d="M180 26L164 49L180 63L196 49Z" fill="#ffdb79"/>
+          <path d="M119 75L143 54H218L241 75L246 118L217 152H143L114 118Z" fill="${p}"/>
+          <path d="M135 86L225 86L220 118L180 134L140 118Z" fill="#1d2747"/>
+          <path d="M143 99L169 104M217 99L191 104" stroke="${glow}" stroke-width="10" stroke-linecap="round"/>
+          <path d="M180 91L169 130L180 137L191 130Z" fill="${metal}"/>
+          <path d="M145 142H215" stroke="${l}" stroke-width="5"/>
+        </g>`
+      : head === 'visor'
       ? `
       <g>
         <path d="M118 67L145 53H215L242 67L248 107L229 150H131L112 107Z" fill="${p}" stroke="${outline}" stroke-width="7" stroke-linejoin="round"/>
@@ -127,6 +158,11 @@ export class MechRenderer {
         ${chestMark}
         <path d="M168 150H192V166H168Z" fill="#203056" stroke="${outline}" stroke-width="4"/>
         ${headArt}
+        ${mech.selection.style === 'fast'
+          ? `<path d="M89 280L52 294M104 292L67 306M271 280L308 294M256 292L293 306" stroke="${glow}" stroke-width="5" stroke-linecap="round" opacity=".85"/>`
+          : mech.selection.style === 'strong'
+            ? `<path d="M115 238L127 258M245 238L233 258" stroke="${l}" stroke-width="9" stroke-linecap="round"/>`
+            : ''}
         <path d="M110 114H126M234 114H250" stroke="#ffb96a" stroke-width="7" stroke-linecap="round"/>
       </g>
     </svg>`;
