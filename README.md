@@ -23,7 +23,7 @@ Die Datenbankmigration `supabase-v06-upgrade.sql` erweitert die bestehenden `mf5
 - 🔄 Spiel kann nach Neuladen auf demselben Gerät wieder aufgenommen werden.
 - 📡 1,6s-Polling, so wird keine Realtime-Konfiguration benötigt.
 
-**Die Online-Funktion ist zunächst deaktiviert**, bis Supabase eingerichtet wird:
+**Online-Verbindung ist eingerichtet** (Projekt „Mech Game for Kids“). Für eine neue Installation oder einen Umzug:
 
 1. Ein Supabase-Projekt bereitstellen oder das bisherige verwenden.
 2. **Auth → Providers → Anonymous Sign-ins** einschalten. Ohne diese Option schlägt der Verbindungsaufbau fehl.
@@ -49,4 +49,4 @@ Du kannst die App auch weiterhin **vollständig offline trainieren**. Online-Pun
 
 ### Installation
 
-Alle Dateien im Repo-Hauptverzeichnis. PWA-Service-Worker nutzt `mech-freunde-v05-online`, JS/CSS werden network-first aktualisiert.
+Alle Dateien im Repo-Hauptverzeichnis. PWA-Service-Worker nutzt `mech-freunde-v06-gear-rematch-profiles`, JS/CSS werden network-first aktualisiert.
