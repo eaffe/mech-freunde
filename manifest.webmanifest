@@ -1,7 +1,7 @@
 {
-  "name": "Mech-Freunde – Mein erster Roboter",
+  "name": "Mech-Freunde – Mechs bauen und mit Freunden spielen",
   "short_name": "Mech-Freunde",
-  "description": "Baue deinen bunten Mech und spiele in der Trainingsarena.",
+  "description": "Mechs bauen, offline trainieren und privat mit Freunden spielen.",
   "id": "./",
   "start_url": "./index.html",
   "scope": "./",
@@ -10,7 +10,17 @@
   "theme_color": "#0c1122",
   "lang": "de",
   "icons": [
-    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }

@@ -1,14 +1,18 @@
 # Änderungen
 
+## v0.5 – Private Online-Duelle
+- Online-Lobby mit Raumcode, keine Chatfunktion oder Namen.
+- Server entscheidet Züge, Schaden, Gewinner und +10 Punkte je Sieg.
+- Online-Shop: Neon, Schatten, Glut – nur kosmetisch.
+- Supabase SQL mit RLS und geschützten RPCs.
+- Offline-Training und lokale Spielstände bleiben kompatibel.
+- PWA-Cache auf `mech-freunde-v05-online` umgestellt.
+
 ## v0.4
-- 3 visuell unterscheidbare Bots mit unterschiedlichen Kampfwerten und KI-Verhalten.
-- Spezialangriff samt Aufladung; neue Kampf-/Schild-/Trefferanimationen.
-- Medaillen und kostenlose Freischaltungen nach 5 und 10 Siegen.
-- Neuer PWA-Cache, kompatible alte IndexedDB-Spielstände.
+- Drei unterschiedliche Trainingsgegner, Spezialangriff, Pokale, Heldenteile.
 
 ## v0.3
-- Größere Hangarvorschau, Samurai-Helm, Klingen-Arme, Schulterpanzer.
-- Drei Spielstile: Leicht, Stark, Schnell.
+- Mech-Bühne, Samurai-Helm, Klingen-Arme, Schulterpanzer, Spielstile.
 
 ## v0.2
-- Kantigere Mechs, Kampfmonitor und rote Farbe.
+- Kantigere Mechs, Rot als Farbe und Kampf-Effekte.

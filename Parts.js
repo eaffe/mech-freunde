@@ -43,7 +43,10 @@ export const COLORS = [
   { id: 'purple', label: 'Lila', primary: '#ac85f4', light: '#decfff', dark: '#785aca' },
   { id: 'lime', label: 'Limette', primary: '#96c953', light: '#dcffa0', dark: '#608d31' },
   { id: 'red', label: 'Rot', primary: '#df4343', light: '#ffb2b2', dark: '#9f2323' },
-  { id: 'gold', label: 'Gold', primary: '#e7ab27', light: '#fff1a8', dark: '#a26315', trophyWins: 10 }
+  { id: 'gold', label: 'Gold', primary: '#e7ab27', light: '#fff1a8', dark: '#a26315', trophyWins: 10 },
+  { id: 'neon', label: 'Neon', primary: '#14cfd3', light: '#a4ffff', dark: '#075e88', onlineOnly: true },
+  { id: 'onyx', label: 'Schatten', primary: '#525878', light: '#b8c4e6', dark: '#1f263e', onlineOnly: true },
+  { id: 'ember', label: 'Glut', primary: '#de5629', light: '#ffca63', dark: '#92251a', onlineOnly: true }
 ];
 
 // Drei sofort verfügbare Spielstile ohne Stern-Kosten.

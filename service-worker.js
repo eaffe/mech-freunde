@@ -1,7 +1,8 @@
-const CACHE_NAME = 'mech-freunde-v04';
+const CACHE_NAME = 'mech-freunde-v05-online';
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './Parts.js',
   './Mech.js', './Pilot.js', './Renderer.js', './Store.js', './TrainingBattle.js', './TrainingBots.js',
+  './OnlineService.js', './online-config.js',
   './manifest.webmanifest', './icon-192.png', './icon-512.png'
 ];
 
@@ -22,14 +23,14 @@ self.addEventListener('fetch', event => {
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (request.mode === 'navigate') {
+  if (request.mode === 'navigate' || /\.(?:js|css)$/.test(url.pathname)) {
     event.respondWith(fetch(request).then(response => {
       if (response.ok) {
         const copy = response.clone();
-        event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put('./index.html', copy)));
+        event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(request, copy)));
       }
       return response;
-    }).catch(async () => await caches.match('./index.html') || Response.error()));
+    }).catch(async () => await caches.match(request) || (request.mode === 'navigate' ? await caches.match('./index.html') : null) || Response.error()));
   } else {
     event.respondWith(caches.match(request).then(async cached => {
       if (cached) return cached;

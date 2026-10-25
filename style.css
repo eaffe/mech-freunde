@@ -316,3 +316,30 @@ button:focus-visible { outline: 3px solid #48d5ff; outline-offset: 3px; }
 .result-back { justify-content:center; width:100%; margin:12px auto 0; }
 @media (max-width:365px) { .opponent-name {font-size:19px;} .opponent-art {width:37%;} .battle-button {font-size:13px;} }
 @media (prefers-reduced-motion:reduce) { .hangar-stage .reactor-glow {animation:none} }
+
+/* v0.5: Private Online-Arena und Arena-Lackierungen */
+.online-entry { background: linear-gradient(180deg,#388de6,#314eb4);box-shadow:0 7px 0 #192f7e,0 13px 22px #0005; margin-top:10px; }
+.online-entry:active { box-shadow: 0 2px 0 #192f7e; }
+.online-panel { margin: 16px 0; background:linear-gradient(180deg,#202f52,#141d36);border:2px solid #6385c4;border-radius:22px;padding:20px 15px;text-align:center;box-shadow:0 6px 0 #0b1328; }
+.online-panel h2 { font-size:23px; margin:6px 0 14px; }
+.online-panel p { font-size:15px; margin:8px 0; font-weight:800; color:#d7e2ff; }
+.online-big-icon { font-size:55px; line-height:1.3; }
+.online-help { display:inline-block;margin-top:16px;color:#a4badd;font-size:13px; }
+.online-bank { display:flex;justify-content:space-around;gap:12px;padding:13px;margin:10px 0 16px;border:2px solid #dbb35e;background:#2b2840;border-radius:16px;font-size:20px;font-weight:1000; }
+.online-wide { width:100%;min-height:67px;margin:8px 0;padding:10px;border:2px solid #b1d0ff;border-radius:17px;background:linear-gradient(180deg,#395da4,#294177);color:white;font-size:19px;font-weight:1000;box-shadow:0 4px 0 #132544; }
+.online-wide:active:not(:disabled) { transform:translateY(3px);box-shadow:0 1px 0 #132544; }
+.online-small { display:block;margin:12px auto 0;padding:9px 14px;border:1px solid #657aa7;background:#232f4b;color:#e8f0ff;border-radius:12px;font-weight:900; }
+.online-join { margin-top:17px;padding-top:14px;border-top:2px dashed #7385b2; }
+.online-join label { display:block;margin:3px 0 10px;font-size:17px;font-weight:900; }
+.online-join input { display:block;width:min(100%,280px);height:72px;margin:0 auto 10px;border:3px solid #9dc3ff;border-radius:15px;background:#f5f7ff;color:#1a2b59;text-align:center;font-size:32px;font-weight:1000;letter-spacing:5px;text-transform:uppercase; }
+.room-code { font-size:clamp(30px,10vw,51px);font-weight:1000;letter-spacing:6px;color:#ffdf72;background:#131c32;border:2px dashed #9ccaff;border-radius:14px;padding:16px 6px;margin:12px auto;user-select:all; }
+.online-shop-link { border-color:#ffd989;background:linear-gradient(180deg,#866e3b,#614b29); }
+.online-shop-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0 18px; }
+.online-paint { min-height:136px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:2px solid #778cb9;background:#283a5e;border-radius:17px;color:white;box-shadow:0 4px 0 #121b34; }
+.online-paint.equipped {border-color:#7ce1b5;background:#1d514e;}
+.paint-orb { font-size:41px; }
+.online-paint strong { font-size:15px; }
+.online-paint small { background:#ffe5a3;color:#1c2444;padding:4px 11px;border-radius:15px;font-size:13px;font-weight:1000; }
+.online-arena { margin:8px 0 14px; }
+.online-message {margin:13px 0;padding:13px;border:2px solid #6385c4;border-radius:16px;text-align:center;background:#1c2d4c;font-size:18px;font-weight:1000; }
+.online-turn {margin:12px 0;text-align:center;color:#fff3ba;font-size:17px;font-weight:1000; }
