@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mech-freunde-v11-adaptive-training';
+const CACHE_NAME = 'mech-freunde-v12-welcome-profile';
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './Parts.js',
   './Mech.js', './Pilot.js', './Renderer.js', './Store.js', './TrainingBattle.js', './TrainingBots.js',

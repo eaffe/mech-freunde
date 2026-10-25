@@ -1,5 +1,11 @@
 # Änderungen
 
+## v1.2 – Ersteinrichtung und sofortiges Spielerprofil
+- Erster Besuch: Fantasiename, Eltern-E-Mail und freiwillige Bestenlisten-Zustimmung direkt vor dem Spielen.
+- Der Benutzername wird sofort ins Supabase-Profil gespeichert. Bei Zustimmung erscheint das Profil direkt in der Bestenliste, auch mit null Siegen.
+- E-Mail wird nicht veröffentlicht; für geräteübergreifendes Spielen bestätigen Eltern die Mail und setzen anschließend ein Passwort.
+- Bestehende fertig eingerichtete Spielerprofile werden nicht erneut aufgefordert; Offline-Einstieg bleibt möglich.
+
 ## v1.1 – Dynamische und kinderfreundliche Trainingsgegner
 - Stärke der drei Trainingsbots passt sich an Leben, Angriff, Rüstung und Ausweichwert des aktuellen Mechs an.
 - Milde Schwankungen: manchmal entspannter, manchmal etwas anspruchsvoller.

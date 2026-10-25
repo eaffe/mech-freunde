@@ -1,6 +1,13 @@
-# Mech-Freunde v1.1 – Adaptive Trainingsgegner, Mech-Garage und Freunde
+# Mech-Freunde v1.2 – Ersteinrichtung, Mech-Garage und Freunde
 
 Kindgerechte, mobil nutzbare PWA ohne Frameworks. Privatduelle über Supabase, Training auch offline. Bestehende Spielstände, Sterne, Pokale, Profile und Online-Punkte bleiben erhalten.
+
+## Neuer Start in v1.2
+- Beim ersten Start wird ein Fantasiename und eine Eltern-E-Mail-Adresse abgefragt. Bestehende Profile mit selbst gewähltem Namen werden nicht erneut gefragt.
+- Benutzername und Icon werden direkt im Online-Profil hinterlegt – ein separater Profil-Schritt entfällt.
+- Die öffentliche Bestenliste ist nur mit ausdrücklich gesetztem Häkchen sichtbar. Die E-Mail-Adresse ist dort nie zu sehen.
+- Die Eltern-E-Mail wird nur an Supabase Auth zum Bestätigen übergeben, nicht in die öffentlich lesbaren Spielprofile geschrieben. Nach Bestätigung kann im Online-Kontomenü ein Passwort gesetzt werden.
+- Anmeldung mit bestehendem Konto oder „erst einmal offline spielen“ bleibt möglich. Bisherige Mechs und Online-Punkte bleiben erhalten.
 
 ## Trainingsbalance in v1.1
 
