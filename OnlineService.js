@@ -67,6 +67,7 @@ export class OnlineService {
   async equip(id) { return this.rpc('mf5_equip_paint', { p_paint: id }); }
   async cancel(id) { return this.rpc('mf5_cancel_match', { p_id: id }); }
   async rematch(id) { return this.rpc('mf6_rematch', { p_id: id }); }
+  async forfeit(id) { return this.rpc('mf7_forfeit', { p_id: id }); }
   async setIdentity(name, avatar, visible) { return this.rpc('mf6_set_identity', { p_name:name, p_avatar:avatar, p_public:visible }); }
   async leaderboard() { return this.rpc('mf6_leaderboard'); }
 }

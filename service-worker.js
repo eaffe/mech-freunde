@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mech-freunde-v06-gear-rematch-profiles';
+const CACHE_NAME = 'mech-freunde-v07-forfeit-leaderboard';
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './Parts.js',
   './Mech.js', './Pilot.js', './Renderer.js', './Store.js', './TrainingBattle.js', './TrainingBots.js',

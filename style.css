@@ -373,3 +373,9 @@ button:focus-visible { outline: 3px solid #48d5ff; outline-offset: 3px; }
 .online-rank-list strong { flex:1; min-width:0; overflow-wrap:anywhere; font-size:14px; text-align:left; }
 .rank-wins { white-space:nowrap; font-size:15px; font-weight:1000; }
 @media (max-width:360px) { .online-name-row select { font-size:13px; } .online-lobby-extras .online-wide { font-size:13px; } }
+
+/* v0.7 Bestenliste und Aufgabe */
+.hangar-leaderboard{width:100%;min-height:58px;margin:10px 0 16px;color:#fff3c0;font-size:19px;font-weight:1000;border:2px solid #e7c66b;border-radius:17px;background:#51402d}
+.online-quick-nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:3px 0 16px}
+.online-quick-link{min-height:54px;padding:8px 5px;font-size:15px;font-weight:1000;border-radius:14px;border:2px solid #718fbd;color:#f3f7ff;background:#253a60}
+.online-forfeit{display:block;width:100%;min-height:48px;margin:17px 0 5px;border:2px solid #a87e86;border-radius:14px;background:#392b3d;color:#ffdcdf;font-size:15px;font-weight:900}
