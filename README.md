@@ -1,59 +1,38 @@
-# Mech-Freunde v0.6 – mehr Mechs & Freunde
+# Mech-Freunde v1.0 – Mech-Garage, Freunde und Turniere
 
-Handyfreundliche PWA ohne Frameworks. Bestehende offline Mechs, Trainingssterne und Pokale bleiben erhalten.
+Kindgerechte, mobil nutzbare PWA ohne Frameworks. Privatduelle über Supabase, Training auch offline. Bestehende Spielstände, Sterne, Pokale, Profile und Online-Punkte bleiben erhalten.
 
-## Neu in v0.6
+## Neue Funktionen
 
-- **40 Bauteile in 5 Gruppen:** mehr Köpfe, Panzerungen, Waffen, Beine und die neue Kategorie **Zubehör**.
-- **Rückkampf ohne Raumcode:** Nach einem abgeschlossenen Online-Duell können beide Spieler mit einem Knopf eine neue Runde gegen denselben Gegner bestätigen. Die zweite Bestätigung startet automatisch ein frisches Duell.
-- **Spielerprofile:** 100 kindgerechte Fantasienamen aus zwei Wortlisten und 12 feste Icons. Keine Freitext-Namen und kein Chat.
-- **Bestenliste:** Top 20 nach Online-Siegen, nur mit ausdrücklichem Häkchen. Ohne Zustimmung kein Eintrag; keine Nutzer-IDs im Ergebnis.
-- **Kompatibel:** Trainingssterne, Teile, Trophäen und Online-Punkte bleiben bestehen. Die neuen Teile wirken im Training, im Online-Duell sind sie weiterhin rein optisch.
+- **Links und rechts unabhängig:** Waffen und Werkzeuge für jeden Mech-Arm einzeln auswählen. Gekaufte Armteile können auf beiden Seiten verwendet werden, ohne sie zweimal bezahlen zu müssen. Frühere Arm-Ausstattung wird auf beide Seiten übernommen.
+- **Garage:** Bis zu fünf Mechs, frei benennbar. „Kopie als neuen Mech“ erstellt einen weiteren Entwurf. Vor Training oder Online-Duell wählt man den aktiven Mech.
+- **Training:** Drei separat ausrüstbare Trainingsgegner, tägliche Sternemissionen, eigener Trainingsverlauf und vier optische Arenen (Weltraum, Vulkan, Eis, Stadt).
+- **Frei wählbare Benutzernamen:** 3 bis 22 Buchstaben, Zahlen, Leerzeichen, `_` oder `-`; begrenzter Filter für verletzende Namen. Die öffentliche Bestenliste bleibt **ausdrücklich freiwillig** und zeigt nur Namen und Icons.
+- **Konto auf mehreren Geräten:** Den bisherigen anonymen Spieler mittels Eltern-E-Mail bestätigen, danach Passwort festlegen. Anmeldung auf weiteren Geräten per E-Mail und Passwort. Online-Punkte bleiben an der **gleichen** Supabase-Spieler-ID, lokale Garage und Sterne werden anschließend als Cloud-Spielstand gesichert. Bei parallelen Änderungen gilt derzeit der zuletzt gespeicherte Stand.
+- **WhatsApp-Einladung:** Im Online-Warteraum „Per WhatsApp einladen“ teilt einen Link mit Raumcode. Der Empfänger kann die PWA direkt öffnen und wird als Gast zuerst zum Verknüpfen oder Anmelden eines Kontos geführt. Keine Telefonnummer wird im Spiel gespeichert.
+- **Freundesliste:** Achtstelligen privaten Freundescode weitergeben; Anfragen annehmen oder entfernen. Bestehende Freunde können im offenen eigenen Raum mit einem Tipp eingeladen werden; der Empfänger kann die Einladung direkt annehmen.
+- **Viererturnier:** Privates Turnier mit sechsstelligen Codes; bei vier Teilnehmern starten zwei Halbfinals, danach automatisch das Finale. Alle Teilnehmer sehen den Turnierbaum; Online-Kämpfe sind identisch mit den bestehenden Serverregeln.
+- **Online-Statistik:** Letzte 25 abgeschlossene Duelle, Siege und Niederlagen anzeigen.
+- **Weiterhin:** Rückkampf ja/nein, Aufgeben, Farben-Shop, Rangliste, drei Kampfaktionen und Offline-Bottraining.
 
-## Server-Update v0.6
+## Supabase – bestehendes Projekt
 
-Die Datenbankmigration `supabase-v06-upgrade.sql` erweitert die bestehenden `mf5_`-Tabellen ohne Löschen. Neue RPCs: `mf6_rematch`, `mf6_set_identity`, `mf6_leaderboard`; bestehende Match-Snapshots und Profile liefern die neuen Felder. Die Migration muss vor dem Ausrollen der neuen Oberfläche auf das Supabase-Projekt angewendet werden.
+Projekt **Mech Game for Kids** (Supabase-Projekt `iyedecofygidcrjlpcib`). Die Migration `supabase-v10-upgrade.sql` wurde beim Update auf die bestehende Datenbank angewendet. `mf5_`-Bestand bleibt erhalten. Serverseitige Zugriffsprüfungen, RLS ohne direkte Tabellenrechte und `SECURITY DEFINER`-RPCs verhindern das Auslesen fremder Spielerprofile und das eigenmächtige Vergeben von Online-Punkten.
 
-## Bereits in v0.5
+**Wichtig vor der Konto-Nutzung:** Im Supabase Dashboard unter **Authentication → Providers** die Optionen für E-Mail-Authentifizierung und **Manual Identity Linking** prüfen/aktivieren. Anonyme Spieler werden über die bestätigte E-Mail in ein dauerhaftes Konto umgewandelt; das ist für den Erhalt ihrer Punkte wesentlich. E-Mails müssen für die Projekt-Domain zugestellt werden können (im produktiven Betrieb SMTP konfigurieren). Unter **Authentication → URL Configuration** die erlaubte Rücksprung-URL `https://eaffe.github.io/mech-freunde/index.html` und die Seitenadresse `https://eaffe.github.io/mech-freunde/` eintragen. Diese Dashboard-Einstellungen können vom PWA-Code nicht geändert werden.
 
-- 🌍 Private **1-gegen-1-Duelle** über sechsstellige Raumcodes (kein Chat, keine Namenspflicht).
-- ⚔️ Drei Züge: Angriff, Schutz, Spezial (nach drei eigenen Aktionen).
-- 🏅 Sieger erhält **10 Online-Punkte** (im Spielserver gespeichert, getrennt von Trainingssternen).
-- 🎨 Online-Mech-Shop: Neon (20), Schatten (30), Glut (40) – kosmetische Lackierungen.
-- 🔄 Spiel kann nach Neuladen auf demselben Gerät wieder aufgenommen werden.
-- 📡 1,6s-Polling, so wird keine Realtime-Konfiguration benötigt.
+**Kinderschutz:** Bitte eine E-Mail der Eltern oder Erziehungsberechtigten verwenden. Keine öffentlichen Chats, Telefon- oder E-Mail-Adressen in der Bestenliste. Die einfache Sperrliste für freie Benutzernamen ersetzt keine menschliche Moderation; für eine größere Kinder-Community sollten Meldefunktion, Moderation, Elterninformation und geeignete rechtliche Prüfung ergänzt werden. WhatsApp wird nur auf Wunsch extern geöffnet; die PWA speichert keine WhatsApp-Kontakte.
 
-**Online-Verbindung ist eingerichtet** (Projekt „Mech Game for Kids“). Für eine neue Installation oder einen Umzug:
+## Testablauf
 
-1. Ein Supabase-Projekt bereitstellen oder das bisherige verwenden.
-2. **Auth → Providers → Anonymous Sign-ins** einschalten. Ohne diese Option schlägt der Verbindungsaufbau fehl.
-3. Die Datei `supabase-v05-online.sql` im **Supabase SQL Editor** vollständig ausführen.
-4. In `online-config.js` die Projekt-URL (`https://...supabase.co`) und den öffentlichen `sb_publishable_...` Key (oder Legacy `eyJ...` anon key) eintragen. **Niemals `service_role` oder geheime Schlüssel hochladen.**
-5. `online-config.js` auf GitHub committen. Die GitHub-Pages-Adresse neu laden. Zwei Geräte öffnen und Code eintippen.
+1. App neu laden; links und rechts unterschiedliche Arme wählen, Mech zur Garage hinzufügen und Training starten.
+2. Konto öffnen, bestehende Gast-ID via Eltern-E-Mail bestätigen, Passwort festlegen, auf zweitem Gerät anmelden; Mechs und Sterne vergleichen.
+3. Online-Raum erstellen, WhatsApp-Einladung testen. Die andere Person richtet ggf. ein Konto ein und tritt bei.
+4. In Freunde einen Code hinzufügen und Anfrage annehmen. Warteraum eröffnen → Freunde → „💌 Duell“; Empfänger nimmt in der Freundesliste an.
+5. Mit vier Geräten privates Turnier erstellen/beitreten; Halbfinals und Finale durchspielen. Beide Geräte nach jeder Runde aktualisieren.
 
-Die SQL-Datei erzeugt **nur Tabellen/Funktionen mit Präfix `mf5_`** und verändert keine Daten der alten Mech Arena. Tabellen sind für Direktzugriffe gesperrt (RLS), Kampfaktionen und Punkte werden ausschließlich in kontrollierten PostgreSQL-Funktionen verarbeitet.
+**Einschränkungen:** Eine produktive Konto-Registrierung und ein komplettes Viererturnier lassen sich nicht ausschließlich mit Datenbanktests verifizieren. Es braucht funktionierende Auth-E-Mail-Zustellung und echte Geräte. Online-Punkte sind serverseitig; offline Sterne bleiben während Internetausfällen lokal. Für mehrere zeitgleich bearbeitete Geräte fehlt eine automatische Konfliktzusammenführung.
 
-### Spielverlauf
+## Deployment
 
-`🏠 Hangar → 🌍 Freunde-Duell → ➕ Arena erstellen → Code teilen → Freund tritt bei → abwechselnd spielen`.
-
-Du kannst die App auch weiterhin **vollständig offline trainieren**. Online-Punkte und gekaufte Online-Lackierungen sind an die anonyme Supabase-Identität auf diesem Gerät gebunden. **Browserdaten löschen / anderes Handy = Zugriff auf diese Identität kann verloren gehen.** Sichere Kontoübertragung ist noch nicht vorhanden.
-
-### Fairness und Schutz
-
-- Private Codes, keine Suche nach Mitspielern, kein Chat, keine Kinderprofile oder Namenseingaben.
-- Online-Züge, Treffer, Sieger, Punkte und Käufe werden **serverseitig** entschieden.
-- Gleiche Kampf-Basiswerte für beide Spieler: Bauteile und Lackierungen sind im Online-Modus kosmetisch.
-- Ein Raum ist 15 Minuten zum Beitreten offen, aktiver Kampf läuft maximal eine Stunde.
-- Für den produktiven Kinderbetrieb: Einverständnis/Datenschutz, Moderation und Abuse-Schutz separat prüfen. Anonyme Nutzer können zusätzliche Konten erzeugen und Ergebnisse zwischen eigenen Konten farmen; v0.5 ist ein Freundes-MVP, kein wettbewerbssicheres Ranglistensystem.
-
-### Installation
-
-Alle Dateien im Repo-Hauptverzeichnis. PWA-Service-Worker nutzt `mech-freunde-v06-gear-rematch-profiles`, JS/CSS werden network-first aktualisiert.
-
-
-## Neu in v0.8
-
-- Trainingsgegner (Flitzer, Wächter und Blitz) separat bauen und ausrüsten; ihre Mechs werden lokal gespeichert.
-- Nach dem Online-Duell einen Rückkampf annehmen oder mit „Nein, danke“ ablehnen.
-- Geplante Funktionen: siehe [TODO.md](TODO.md).
+GitHub Pages auf `main`, alle App-Dateien im Repository-Hauptverzeichnis. Service Worker `mech-freunde-v10-social-garage-arms-v1` aktualisiert den Cache. `online-config.js` ist die **öffentliche Publishable-Key-Konfiguration**, niemals `service_role` oder geheime Keys an die PWA geben.

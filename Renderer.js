@@ -50,7 +50,7 @@ export class MechRenderer {
         <path d="M106 327H168M194 327H257" stroke="${l}" stroke-width="6" stroke-linecap="round"/>
       </g>`;
 
-    const armArt = ['hammer','claws','cannons','staff','saw'].includes(arms) ? `
+    const makeArmArt = arms => ['hammer','claws','cannons','staff','saw'].includes(arms) ? `
       <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
         <path d="M69 144H113L111 217H70Z M247 144H291L290 217H248Z" fill="${d}"/>
         <path d="M51 210H115L119 255L72 273L48 251Z M245 210H309L312 251L288 273L241 255Z" fill="${p}"/>
@@ -98,6 +98,9 @@ export class MechRenderer {
         <path d="M254 212L297 212L307 233L297 257L274 267L253 247Z" fill="${p}"/>
         <path d="M76 238L55 248M91 250L73 266M283 250L301 266M270 238L289 248" stroke="${l}" stroke-width="5" stroke-linecap="round"/>
       </g>`;
+
+    const armArt = `<g clip-path="url(#${prefix}-armleft)">${makeArmArt(mech.selection.leftArm || arms)}</g>`
+      + `<g clip-path="url(#${prefix}-armright)">${makeArmArt(mech.selection.rightArm || arms)}</g>`;
 
     const chestMark = ['fortress','crystalcore','dragonplate','stealth'].includes(body) ? `
       <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
@@ -176,6 +179,8 @@ export class MechRenderer {
 
     return `<svg class="${className}" viewBox="${viewBox}" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">
       <defs>
+        <clipPath id="${prefix}-armleft"><rect x="0" y="0" width="180" height="380"/></clipPath>
+        <clipPath id="${prefix}-armright"><rect x="180" y="0" width="180" height="380"/></clipPath>
         <linearGradient id="${prefix}-armor" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stop-color="${l}"/>
           <stop offset="0.45" stop-color="${p}"/>

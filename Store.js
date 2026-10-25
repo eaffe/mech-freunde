@@ -18,20 +18,20 @@ export class PilotStore {
     return this.dbPromise;
   }
 
-  async load() {
+  async load(key = 'pilot') {
     const db = await this.connect();
     return new Promise((resolve, reject) => {
-      const request = db.transaction('save', 'readonly').objectStore('save').get('pilot');
+      const request = db.transaction('save', 'readonly').objectStore('save').get(key);
       request.onsuccess = () => resolve(request.result || null);
       request.onerror = () => reject(request.error);
     });
   }
 
-  async save(data) {
+  async save(data, key = 'pilot') {
     const db = await this.connect();
     return new Promise((resolve, reject) => {
       const tx = db.transaction('save', 'readwrite');
-      tx.objectStore('save').put(data, 'pilot');
+      tx.objectStore('save').put(data, key);
       tx.oncomplete = resolve;
       tx.onerror = () => reject(tx.error);
       tx.onabort = () => reject(tx.error);

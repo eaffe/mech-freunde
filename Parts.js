@@ -1,7 +1,8 @@
 export const CATEGORIES = [
   { id: 'head', icon: '🥷', label: 'Kopf', viewBox: '76 0 210 160' },
   { id: 'body', icon: '🛡️', label: 'Rüstung', viewBox: '56 122 248 153' },
-  { id: 'arms', icon: '⚔️', label: 'Arme', viewBox: '10 128 340 175' },
+  { id: 'leftArm', icon: '🦾', label: 'Links', viewBox: '0 128 180 195' },
+  { id: 'rightArm', icon: '⚔️', label: 'Rechts', viewBox: '180 128 180 195' },
   { id: 'legs', icon: '🥾', label: 'Beine', viewBox: '85 244 196 119' },
   { id: 'gear', icon: '🎒', label: 'Zubehör', viewBox: '0 20 360 320' },
   { id: 'color', icon: '🎨', label: 'Farbe', viewBox: '0 0 360 380' }
@@ -62,6 +63,10 @@ export const PARTS = {
   ]
 };
 
+// Left and right arms share the same unlocks and shop prices.
+PARTS.leftArm = PARTS.arms;
+PARTS.rightArm = PARTS.arms;
+
 export const COLORS = [
   { id: 'mint', label: 'Türkis', primary: '#37c8b0', light: '#90f9e2', dark: '#168d83' },
   { id: 'pink', label: 'Pink', primary: '#f279bd', light: '#ffd2ec', dark: '#c34b92' },
@@ -87,7 +92,7 @@ export const STYLES = Object.freeze([
 export const findStyle = id => STYLES.find(style => style.id === id) || STYLES[0];
 
 export const STARTER_SELECTION = Object.freeze({
-  head: 'smile', body: 'heart', arms: 'hands', legs: 'boots', gear: 'none', color: 'mint', style: 'light'
+  head: 'smile', body: 'heart', arms: 'hands', leftArm: 'hands', rightArm: 'hands', legs: 'boots', gear: 'none', color: 'mint', style: 'light'
 });
 
 export const findPart = (category, id) => PARTS[category]?.find(part => part.id === id) || null;

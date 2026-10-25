@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mech-freunde-v08-opponent-builder-rematch-decline';
+const CACHE_NAME = 'mech-freunde-v10-social-garage-arms-v1';
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './Parts.js',
   './Mech.js', './Pilot.js', './Renderer.js', './Store.js', './TrainingBattle.js', './TrainingBots.js',

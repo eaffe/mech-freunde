@@ -27,7 +27,7 @@ export class OnlineService {
       }
       if (!window.supabase?.createClient) throw new Error('Supabase konnte nicht gestartet werden');
       const client = window.supabase.createClient(ONLINE_CONFIG.url, ONLINE_CONFIG.publishableKey, {
-        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
       });
       const { data: { session }, error: sessionError } = await client.auth.getSession();
       if (sessionError) throw sessionError;
@@ -71,6 +71,50 @@ export class OnlineService {
   async forfeit(id) { return this.rpc('mf7_forfeit', { p_id: id }); }
   async setIdentity(name, avatar, visible) { return this.rpc('mf6_set_identity', { p_name:name, p_avatar:avatar, p_public:visible }); }
   async leaderboard() { return this.rpc('mf6_leaderboard'); }
+  async matchHistory(){return this.rpc('mf10_match_history');}
+  async getAccount() {
+    const client=await this.connect();
+    const {data,error}=await client.auth.getUser();
+    if(error)throw new Error('Konto konnte nicht geladen werden');
+    return data.user;
+  }
+  async linkEmail(email) {
+    const client=await this.connect();
+    const {error}=await client.auth.updateUser({email},
+      {emailRedirectTo:new URL('./index.html#online',window.location.href).href});
+    if(error)throw new Error('E-Mail konnte nicht verknüpft werden: '+error.message);
+  }
+  async setPassword(password) {
+    const client=await this.connect();
+    const {error}=await client.auth.updateUser({password});
+    if(error)throw new Error('Passwort konnte nicht gespeichert werden');
+  }
+  async login(email,password) {
+    const client=await this.connect();
+    const {data,error}=await client.auth.signInWithPassword({email,password});
+    if(error)throw new Error('Anmeldung fehlgeschlagen. E-Mail und Passwort prüfen.');
+    return data.user;
+  }
+  async logoutToGuest() {
+    const client=await this.connect();
+    const {error}=await client.auth.signOut();
+    if(error)throw new Error('Abmeldung fehlgeschlagen');
+    const next=await client.auth.signInAnonymously();
+    if(next.error)throw new Error('Gastzugang nicht verfügbar');
+  }
+  async game(){return this.rpc('mf10_game');}
+  async saveGame(data){return this.rpc('mf10_save_game',{p_data:data});}
+  async friendCode(){return this.rpc('mf10_friend_code');}
+  async friends(){return this.rpc('mf10_list_friends');}
+  async addFriend(code){return this.rpc('mf10_add_friend',{p_code:code});}
+  async acceptFriend(userId){return this.rpc('mf10_accept_friend',{p_sender:userId});}
+  async removeFriend(userId){return this.rpc('mf10_remove_friend',{p_other:userId});}
+  async inviteFriend(userId,matchId){return this.rpc('mf10_invite_friend',{p_receiver:userId,p_match:matchId});}
+  async pendingInvites(){return this.rpc('mf10_pending_invites');}
+  async acceptInvite(id,look){return this.rpc('mf10_accept_invite',{p_invite:id,p_look:look});}
+  async newTournament(look){return this.rpc('mf10_tourney_create',{p_look:look});}
+  async joinTournament(code,look){return this.rpc('mf10_tourney_join',{p_code:code,p_look:look});}
+  async tournamentState(code){return this.rpc('mf10_tourney_state',{p_code:code});}
 }
 
 export const ONLINE_PAINTS = Object.freeze([

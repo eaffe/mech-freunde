@@ -1,34 +1,28 @@
-## v0.8 – Gegner-Baukasten und Rückkampf ablehnen
-
-- Trainingsbots erhalten unabhängige, lokal gespeicherte Ausrüstungen (Köpfe, Waffen, Panzerung, Beine, Zubehör, Farben, Stil).
-- Angepasste Trainingswerte bleiben begrenzt und wirken sich nicht auf Online-Duelle aus.
-- Rückkampf kann ausdrücklich abgelehnt werden; beide Spieler sehen den Status.
-- Keine Änderung an bisherigen Spielständen, Online-Punkten oder Supabase-Konfiguration.
-
 # Änderungen
 
-## v0.6 – Werkstatt, Rückkampf und Bestenliste
-- 24 zusätzliche Bauteile inklusive 5 neuer Köpfe und eigener Zubehör-Kategorie.
-- Direkter Rückkampf gegen denselben Online-Gegner: beide bestätigen, kein Code nötig.
-- Kindgerechte Fantasienamen und 12 Avatar-Icons für Online-Piloten.
-- Freiwillige Top-20-Bestenliste nach Online-Siegen, nur Opt-in.
-- Bestehende Offline-Spielstände, Online-Siege und Online-Punkte bleiben erhalten.
-- PWA-Cache aktualisiert.
+## v1.0 – Mech-Garage, freie Namen und Freunde
+- Linken und rechten Arm separat ausrüsten; vorhandene Armteile gemeinsam freischalten und alte Mechs automatisch übernehmen.
+- Bis zu fünf gespeicherte Mechs und benennbare Garage.
+- Tägliche Trainingsmissionen, vier optische Kampfarenen, private Trainings- und Online-Kampfverläufe.
+- Freie Benutzernamen (3–22 Zeichen) mit Whitelist erlaubter Zeichen und einfacher Wortfilterung, öffentliche Bestenliste weiterhin opt-in.
+- E-Mail/Passwort-Kontoverknüpfung für bestehende anonyme Identitäten; Cloud-Spielstand an authentifizierte dauerhafte Accounts gebunden.
+- WhatsApp-Einladungslinks in aktiven Warteräumen mit Konto-Onboarding für eingeladene Gäste.
+- Private Freundescodes, Anfragen, direkte Warteraum-Einladungen an Freunde.
+- Viererturniere mit zwei Halbfinals und Finale, privater Turnierstand.
+- Serverseitige Funktionen für Duelle, Profil, Freunde, Cloud-Speicher, Turniere und Historie; keine direkten Tabellenschreibrechte.
+- Offline-Speicher, bestehende Online-Punkte, Shop-Käufe und Rückkämpfe bleiben erhalten.
 
+## v0.8 – Trainingsgegner bauen und Rückkampf ablehnen
+- Ausrüstung für jeden Trainingsbot separat speichern.
+- Rückkampf ausdrücklich bejahen oder ablehnen, Benachrichtigung an beide Spieler.
+
+## v0.7 – Bestenliste und Aufgeben
+- Bestenliste jederzeit zugänglich, opt-in, auch Spieler mit 0 Siegen.
+- Aufgeben mit serverseitigem Sieg für den Gegner.
+
+## v0.6 – Zubehör und Profile
+- 40 Bauteile, neue Köpfe und Farben.
+- Rückkämpfe ohne erneuten Code, Profile und Bestenliste.
 
 ## v0.5 – Private Online-Duelle
-- Online-Lobby mit Raumcode, keine Chatfunktion oder Namen.
-- Server entscheidet Züge, Schaden, Gewinner und +10 Punkte je Sieg.
-- Online-Shop: Neon, Schatten, Glut – nur kosmetisch.
-- Supabase SQL mit RLS und geschützten RPCs.
-- Offline-Training und lokale Spielstände bleiben kompatibel.
-- PWA-Cache auf `mech-freunde-v05-online` umgestellt.
-
-## v0.4
-- Drei unterschiedliche Trainingsgegner, Spezialangriff, Pokale, Heldenteile.
-
-## v0.3
-- Mech-Bühne, Samurai-Helm, Klingen-Arme, Schulterpanzer, Spielstile.
-
-## v0.2
-- Kantigere Mechs, Rot als Farbe und Kampf-Effekte.
+- Räume mit Code, drei Kampfaktionen, serverseitige Punkte und Shop.
