@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mech-freunde-v05-online';
+const CACHE_NAME = 'mech-freunde-v05-online-config-fix';
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './Parts.js',
   './Mech.js', './Pilot.js', './Renderer.js', './Store.js', './TrainingBattle.js', './TrainingBots.js',
