@@ -66,6 +66,9 @@ export class OnlineService {
   async buy(id) { return this.rpc('mf5_buy_paint', { p_paint: id }); }
   async equip(id) { return this.rpc('mf5_equip_paint', { p_paint: id }); }
   async cancel(id) { return this.rpc('mf5_cancel_match', { p_id: id }); }
+  async rematch(id) { return this.rpc('mf6_rematch', { p_id: id }); }
+  async setIdentity(name, avatar, visible) { return this.rpc('mf6_set_identity', { p_name:name, p_avatar:avatar, p_public:visible }); }
+  async leaderboard() { return this.rpc('mf6_leaderboard'); }
 }
 
 export const ONLINE_PAINTS = Object.freeze([
@@ -73,3 +76,7 @@ export const ONLINE_PAINTS = Object.freeze([
   { id:'onyx', icon:'🌑', name:'Schatten', cost:30 },
   { id:'ember', icon:'🔥', name:'Glut', cost:40 }
 ]);
+
+export const ONLINE_AVATARS = Object.freeze(['🤖','🐉','🦊','🐼','🐯','🦉','🦄','🚀','⭐','🦁','🐺','🛡️']);
+export const NAME_FIRST = Object.freeze(['Blitz','Turbo','Stern','Mega','Neon','Wolken','Feuer','Eis','Super','Gold']);
+export const NAME_SECOND = Object.freeze(['Fuchs','Drache','Tiger','Panda','Falke','Robo','Luchs','Komet','Kaefer','Wolf']);

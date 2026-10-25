@@ -5,7 +5,9 @@ import { Pilot } from './Pilot.js';
 import { PilotStore } from './Store.js';
 import { TrainingBattle } from './TrainingBattle.js';
 import { TRAINING_BOTS, makeTrainingMech } from './TrainingBots.js';
-import { OnlineService, ONLINE_PAINTS } from './OnlineService.js';
+import { OnlineService, ONLINE_PAINTS, ONLINE_AVATARS, NAME_FIRST, NAME_SECOND } from './OnlineService.js';
+
+const safeText = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 
 class MechFriendsApp {
   constructor(root) {
@@ -28,6 +30,13 @@ class MechFriendsApp {
     this.onlineBusy = false;
     this.onlineError = '';
     this.onlineShopOpen = false;
+    this.onlineProfileOpen = false;
+    this.onlineLeaderboardOpen = false;
+    this.onlineLeaderboard = null;
+    this.onlineAvatarDraft = '🤖';
+    this.onlinePublicDraft = false;
+    this.onlineNameFirst = NAME_FIRST[0];
+    this.onlineNameSecond = NAME_SECOND[0];
     this.onlinePollTimer = null;
     this.onlinePolling = false;
     this.onlineDismissedMatch = null;
@@ -198,7 +207,7 @@ class MechFriendsApp {
         }).join('')}</div>`;
 
     return `<header class="topbar">
-      <div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.5</small></span></div>
+      <div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.6</small></span></div>
       ${this.starBank()}
     </header>
     <main>
@@ -236,7 +245,7 @@ class MechFriendsApp {
     const p = this.onlineProfile;
     const b = this.onlineMatch;
     const busy = this.onlineBusy;
-    const header = `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.5</small></span></div>${this.starBank()}</header>
+    const header = `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.6</small></span></div>${this.starBank()}</header>
       <main><div class="training-top"><button class="back-button" data-action="online-back" aria-label="Zurück zum Hangar"><span>⬅️</span> Hangar</button>
       <div class="round-label">🌍 Privat</div></div><h1 class="section-title">🌍 Freunde-Duell</h1>`;
     if (!this.online.configured) return `${header}
@@ -247,7 +256,7 @@ class MechFriendsApp {
       <div class="online-panel"><div class="online-big-icon">📡</div><h2>Verbindung prüfen</h2>
       <p>${this.onlineError}</p><button class="online-wide" data-action="online-retry">🔄 Nochmal</button></div></main>`;
     if (!p) return `${header}<div class="online-panel"><div class="online-big-icon">🔄</div><h2>Verbinden …</h2></div></main>`;
-    const bank = `<div class="online-bank"><span>🏅 ${p.points} Punkte</span><span>🏆 ${p.wins}</span></div>`;
+    const bank = `<div class="online-bank"><span>🏅 ${p.points} Punkte</span><span>🏆 ${p.wins}</span></div><div class="online-player-tag">${safeText(p.avatar)} ${safeText(p.nickname)}</div>`;
     if (b && (b.status === 'waiting' || b.status === 'active' || b.status === 'finished')) {
       const mySide = b.side;
       const yourTurn = b.turn === mySide;
@@ -260,13 +269,21 @@ class MechFriendsApp {
       const byYou = last.by === mySide;
       const eventIcon = last.kind === 'special' ? '⚡' : last.kind === 'hit' ? '💥' : last.kind === 'miss' ? '💨'
         : last.kind === 'guard' ? '🛡️' : '⚔️';
+      const myName = mySide === 'host' ? b.hostName : b.guestName;
+      const otherName = mySide === 'host' ? b.guestName : b.hostName;
+      const myAvatar = mySide === 'host' ? b.hostAvatar : b.guestAvatar;
+      const otherAvatar = mySide === 'host' ? b.guestAvatar : b.hostAvatar;
+      const requested = mySide === 'host' ? b.rematchHost : b.rematchGuest;
+      const otherRequested = mySide === 'host' ? b.rematchGuest : b.rematchHost;
       const result = b.status === 'waiting' ? `<div class="online-panel"><div class="online-big-icon">⏳</div>
          <p>Code an Freund weitergeben</p><div class="room-code" aria-label="Raumcode ${b.code}">${b.code}</div>
          <button class="online-wide" data-action="online-copy">📋 Code kopieren</button>
          <button class="online-small" data-action="online-cancel" ${busy?'disabled':''}>❌ Raum schließen</button></div>`
         : b.status === 'finished' ? `<div class="online-panel"><div class="online-big-icon">${b.winner===mySide?'🏆🎉':'🤖💜'}</div>
           <h2>${b.winner===mySide?'Gewonnen! +10 🏅':'Gut gespielt!'}</h2>
-          <button class="online-wide" data-action="online-new" ${busy?'disabled':''}>🔁 Neues Duell</button>
+          ${otherRequested ? '<p class="rematch-invite">💌 Dein Freund möchte noch einmal kämpfen!</p>' : ''}
+          <button class="online-wide rematch-primary" data-action="online-rematch" ${busy||requested?'disabled':''}>${requested?'⏳ Warte auf deinen Freund …':'🔁 Nochmal gegen denselben Freund'}</button>
+          <button class="online-small" data-action="online-new" ${busy?'disabled':''}>🆕 Anderes Duell erstellen</button>
           <button class="online-small" data-action="online-lobby">🏠 Zur Übersicht</button></div>`
         : `<div class="online-message" role="status" aria-live="polite">${eventIcon} ${last.kind==='join'?'Bereit!':last.kind==='guard'?(byYou?'Schild an!':'Freund schützt sich!'):
           ['hit','special'].includes(last.kind)?`${byYou?'Treffer!':'Treffer vom Freund!'} -${last.damage}`:
@@ -277,11 +294,33 @@ class MechFriendsApp {
           <button class="battle-button special" data-action="online-special" ${!yourTurn||busy||yourPower<3?'disabled':''} aria-label="Online Spezialangriff"><span class="battle-icon">⚡</span>Spezial<div class="power-meter">${[1,2,3].map(i=>`<span class="power-cell ${yourPower>=i?'charged':''}"></span>`).join('')}</div></button></div>`;
       return `${header}${bank}${b.status === 'waiting' ? '' : `<section class="arena online-arena" aria-label="Freundesduell">
         <div class="arena-monitor"><div class="scanline"></div>${last.kind==='special'?'<div class="electric-ring right"></div>':''}</div>
-        <div class="fighters"><div class="fighter-card"><div class="fighter-name">🟢 Du</div>
+        <div class="fighters"><div class="fighter-card"><div class="fighter-name">${safeText(myAvatar)} ${safeText(myName)}</div>
          <div class="fighter-visual">${MechRenderer.draw(myLook)}</div><div class="hp-track"><div class="hp-fill" style="--pct:${playerHp}%"></div></div><div class="hp-number">❤️ ${playerHp} / 100</div></div>
-        <div class="fighter-card"><div class="fighter-name">🔴 Freund</div><div class="fighter-visual enemy">${MechRenderer.draw(otherLook)}</div>
+        <div class="fighter-card"><div class="fighter-name">${safeText(otherAvatar)} ${safeText(otherName)}</div><div class="fighter-visual enemy">${MechRenderer.draw(otherLook)}</div>
          <div class="hp-track"><div class="hp-fill enemy" style="--pct:${enemyHp}%"></div></div><div class="hp-number">❤️ ${enemyHp} / 100</div></div></div></section>`}
         ${result}<p class="footnote">🔒 Nur mit Code. Kein Chat. Punkte kommen vom Spielserver.</p></main>`;
+    }
+    if (this.onlineProfileOpen) {
+      return `${header}${bank}<div class="online-panel"><div class="online-big-icon">🪪</div><h2>Mein Spielerprofil</h2>
+        <p>Wähle einen Fantasienamen. Bitte keinen echten Namen verwenden.</p>
+        <div class="online-name-row"><label>Mein Name
+          <select id="name-first" aria-label="Erstes Namenswort">${NAME_FIRST.map(n=>`<option value="${n}" ${n===this.onlineNameFirst?'selected':''}>${n}</option>`).join('')}</select></label>
+          <label> <select id="name-second" aria-label="Zweites Namenswort">${NAME_SECOND.map(n=>`<option value="${n}" ${n===this.onlineNameSecond?'selected':''}>${n}</option>`).join('')}</select></label></div>
+        <div class="online-avatar-title">Mein Spieler-Icon</div>
+        <div class="online-avatar-grid">${ONLINE_AVATARS.map(icon=>`<button class="online-avatar ${this.onlineAvatarDraft===icon?'selected':''}" data-action="online-avatar" data-value="${icon}" aria-pressed="${this.onlineAvatarDraft===icon}" aria-label="Icon ${icon}">${icon}</button>`).join('')}</div>
+        <label class="online-privacy"><input type="checkbox" id="leaderboard-opt-in" ${this.onlinePublicDraft?'checked':''}/>
+          <span>🏆 Meinen Fantasienamen in der Bestenliste zeigen</span></label>
+        <p class="online-privacy-note">Freiwillig! Ohne Häkchen bist du nicht in der öffentlichen Liste.</p>
+        <button class="online-wide" data-action="online-profile-save" ${busy?'disabled':''}>💾 Profil speichern</button>
+        <button class="online-small" data-action="online-profile-back">⬅️ Zurück</button></div></main>`;
+    }
+    if (this.onlineLeaderboardOpen) {
+      const list = this.onlineLeaderboard;
+      return `${header}${bank}<div class="online-panel"><div class="online-big-icon">🏆</div><h2>Mech-Bestenliste</h2>
+        <p>Die 20 besten freiwillig sichtbaren Piloten – nach Online-Siegen.</p>
+        ${!list?'<p>⏳ Lade Bestenliste …</p>':list.length?`<ol class="online-rank-list">${list.map(row=>`<li><span class="rank-number">${row.rank}.</span><span class="rank-avatar">${safeText(row.avatar)}</span><strong>${safeText(row.nickname)}</strong><span class="rank-wins">🏆 ${Number(row.wins)||0}</span></li>`).join('')}</ol>`:'<p>🌟 Noch keine Einträge. Gewinne ein Duell und aktiviere dein Profil!</p>'}
+        <button class="online-wide" data-action="online-leaderboard-refresh" ${busy?'disabled':''}>🔄 Aktualisieren</button>
+        <button class="online-small" data-action="online-leaderboard-back">⬅️ Zurück</button></div></main>`;
     }
     if (this.onlineShopOpen) {
       return `${header}${bank}<div class="online-panel"><div class="online-big-icon">🎨</div><h2>Mech-Farben</h2>
@@ -298,8 +337,10 @@ class MechFriendsApp {
        <div class="online-join"><label for="room-code">🔑 Freundes-Code</label><input id="room-code" inputmode="text" type="text"
         maxlength="6" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABC234" aria-label="Sechsstelligen Code eingeben" />
        <button class="online-wide" data-action="online-join" ${busy?'disabled':''}>▶ Beitreten</button></div>
-       <button class="online-wide online-shop-link" data-action="online-shop">🎨 Mech-Shop 🏅</button></div>
-       <p class="footnote">🛡️ Keine echten Namen, kein Chat, keine öffentliche Spielersuche.</p></main>`;
+       <button class="online-wide online-shop-link" data-action="online-shop">🎨 Mech-Shop 🏅</button>
+       <div class="online-lobby-extras"><button class="online-wide" data-action="online-profile">🪪 Mein Name & Icon</button>
+       <button class="online-wide" data-action="online-leaderboard">🏆 Bestenliste</button></div></div>
+       <p class="footnote">🛡️ Nur Fantasienamen & Icons. Kein Chat. Bestenliste freiwillig.</p></main>`;
   }
 
   stopOnlinePoll() { clearInterval(this.onlinePollTimer); this.onlinePollTimer=null; }
@@ -311,7 +352,7 @@ class MechFriendsApp {
   }
   async openOnline() {
     if (this.screen === 'hangar') history.pushState({mechFriendsScreen:'online'},'',`${location.pathname}${location.search}#online`);
-    this.screen='online'; this.onlineError=''; this.onlineShopOpen=false; this.render();
+    this.screen='online'; this.onlineError=''; this.onlineShopOpen=false; this.onlineProfileOpen=false; this.onlineLeaderboardOpen=false; this.render();
     if (!this.online.configured) return;
     this.onlineBusy=true;
     try {
@@ -326,9 +367,13 @@ class MechFriendsApp {
     this.onlinePolling=true;
     try {
       const previous=this.onlineMatch;
-      if (previous && (previous.status==='waiting'||previous.status==='active')) {
+      if (previous && ['waiting','active','finished'].includes(previous.status)) {
         const latest=await this.online.state(previous.id);
-        if (latest.version!==previous.version || latest.status!==previous.status) {
+        if (latest.nextMatchId) {
+          this.onlineMatch = await this.online.state(latest.nextMatchId);
+          this.onlineDismissedMatch = null;
+          this.render();
+        } else if (latest.version!==previous.version || latest.status!==previous.status) {
           this.onlineMatch=latest;
           if (latest.status==='finished') this.onlineProfile=await this.online.rpc('mf5_profile');
           this.render();
@@ -351,6 +396,29 @@ class MechFriendsApp {
       return;
     }
     if (action==='online-lobby') { this.onlineDismissedMatch=this.onlineMatch?.id; this.onlineMatch=null; this.render(); return; }
+    if (action==='online-profile') {
+      this.onlineShopOpen=false; this.onlineLeaderboardOpen=false; this.onlineProfileOpen=true;
+      const words = (this.onlineProfile?.nickname || '').split(' ');
+      this.onlineNameFirst = NAME_FIRST.includes(words[0]) ? words[0] : NAME_FIRST[0];
+      this.onlineNameSecond = NAME_SECOND.includes(words[1]) ? words[1] : NAME_SECOND[0];
+      this.onlineAvatarDraft = this.onlineProfile?.avatar || '🤖';
+      this.onlinePublicDraft = Boolean(this.onlineProfile?.showInLeaderboard); this.render(); return;
+    }
+    if (action==='online-profile-back') { this.onlineProfileOpen=false; this.render(); return; }
+    if (action==='online-avatar') {
+      this.onlineNameFirst=this.root.querySelector('#name-first')?.value || this.onlineNameFirst;
+      this.onlineNameSecond=this.root.querySelector('#name-second')?.value || this.onlineNameSecond;
+      this.onlinePublicDraft=Boolean(this.root.querySelector('#leaderboard-opt-in')?.checked);
+      this.onlineAvatarDraft=button.dataset.value; this.render(); return;
+    }
+    if (action==='online-leaderboard-back') { this.onlineLeaderboardOpen=false; this.render(); return; }
+    if (action==='online-leaderboard' || action==='online-leaderboard-refresh') {
+      this.onlineShopOpen=false; this.onlineProfileOpen=false; this.onlineLeaderboardOpen=true;
+      this.onlineLeaderboard=null; this.render();
+      try { this.onlineLeaderboard=await this.online.leaderboard(); }
+      catch (_) { this.showToast('📡 Bestenliste gerade nicht verfügbar'); this.onlineLeaderboard=[]; }
+      if (this.screen==='online') this.render(); return;
+    }
     if (action==='online-shop') { this.onlineShopOpen=true; this.render(); return; }
     if (action==='online-shop-back') { this.onlineShopOpen=false; this.render(); return; }
     if (action==='online-retry') { this.onlineProfile=null; await this.openOnline(); return; }
@@ -361,7 +429,19 @@ class MechFriendsApp {
     }
     this.onlineBusy=true;
     try {
-      if (action==='online-create' || action==='online-new') {
+      if (action==='online-profile-save') {
+        const first=this.root.querySelector('#name-first')?.value;
+        const second=this.root.querySelector('#name-second')?.value;
+        if (!NAME_FIRST.includes(first) || !NAME_SECOND.includes(second) || !ONLINE_AVATARS.includes(this.onlineAvatarDraft)) throw new Error('Bitte Namen und Icon wählen');
+        this.onlineNameFirst=first; this.onlineNameSecond=second;
+        this.onlinePublicDraft=Boolean(this.root.querySelector('#leaderboard-opt-in')?.checked);
+        this.onlineProfile=await this.online.setIdentity(`${first} ${second}`,this.onlineAvatarDraft,this.onlinePublicDraft);
+        this.onlineProfileOpen=false; this.showToast('✨ Profil gespeichert!');
+      } else if (action==='online-rematch') {
+        const value=await this.online.rematch(this.onlineMatch.id);
+        this.onlineMatch=value;
+        if (value.status==='active') this.showToast('⚔️ Nächste Runde startet!');
+      } else if (action==='online-create' || action==='online-new') {
         this.onlineMatch=await this.online.create(this.pilot.mech.selection);
         this.onlineDismissedMatch=null;
       } else if (action==='online-join') {
@@ -409,7 +489,7 @@ class MechFriendsApp {
   }
 
   chooseMarkup() {
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.5</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.6</small></span></div>${this.starBank()}</header>
       <main>
         <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Hangar"><span>⬅️</span> Hangar</button>
           <div class="round-label">🎯 Training</div></div>
@@ -471,7 +551,7 @@ class MechFriendsApp {
         <button class="battle-button shield" data-action="shield" ${blocked ? 'disabled' : ''} aria-label="Mit Schild schützen"><span class="battle-icon">🛡️</span><span>Schutz</span></button>
         <button class="battle-button special" data-action="special" ${blocked || !b.specialReady ? 'disabled' : ''} aria-label="Spezialangriff ${b.specialReady ? 'bereit' : 'lädt sich auf'}"><span class="battle-icon">⚡</span><span>Spezial</span>${power}</button>
       </div>`;
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.5</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.6</small></span></div>${this.starBank()}</header>
       <main>
         <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Baukasten"><span>⬅️</span> Hangar</button><div class="round-label">🎯 Training</div></div>
         <h1 class="section-title">⚔️ ${b.bot.icon} ${b.bot.label}</h1>

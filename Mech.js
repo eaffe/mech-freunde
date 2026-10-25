@@ -3,7 +3,7 @@ import { STARTER_SELECTION, findPart, findColor, findStyle } from './Parts.js';
 export class Mech {
   constructor(selection = {}) {
     this.selection = { ...STARTER_SELECTION };
-    for (const category of ['head', 'body', 'arms', 'legs']) {
+    for (const category of ['head', 'body', 'arms', 'legs', 'gear']) {
       if (findPart(category, selection[category])) this.selection[category] = selection[category];
     }
     this.selection.color = findColor(selection.color).id;
@@ -30,7 +30,7 @@ export class Mech {
     sum.attack += style.attack;
     sum.armor += style.armor;
     sum.dodge += style.dodge;
-    for (const category of ['head', 'body', 'arms', 'legs']) {
+    for (const category of ['head', 'body', 'arms', 'legs', 'gear']) {
       const part = findPart(category, this.selection[category]);
       if (!part) continue;
       sum.hp += part.hp;

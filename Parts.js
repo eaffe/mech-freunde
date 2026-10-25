@@ -3,6 +3,7 @@ export const CATEGORIES = [
   { id: 'body', icon: '🛡️', label: 'Rüstung', viewBox: '56 122 248 153' },
   { id: 'arms', icon: '⚔️', label: 'Arme', viewBox: '10 128 340 175' },
   { id: 'legs', icon: '🥾', label: 'Beine', viewBox: '85 244 196 119' },
+  { id: 'gear', icon: '🎒', label: 'Zubehör', viewBox: '0 20 360 320' },
   { id: 'color', icon: '🎨', label: 'Farbe', viewBox: '0 0 360 380' }
 ];
 
@@ -13,25 +14,51 @@ export const PARTS = {
     { id: 'smile', name: 'Kuller', cost: 0, icon: '😊', hp: 0, attack: 0, armor: 0 },
     { id: 'visor', name: 'Visier', cost: 6, icon: '😎', hp: 0, attack: 0, armor: 2 },
     { id: 'antenna', name: 'Fühler', cost: 10, icon: '📡', hp: 0, attack: 3, armor: 0 },
-    { id: 'samurai', name: 'Samurai', cost: 14, icon: '🥷', hp: 5, attack: 2, armor: 1 }
+    { id: 'samurai', name: 'Samurai', cost: 14, icon: '🥷', hp: 5, attack: 2, armor: 1 },
+    { id: 'dragon', name: 'Drachenhelm', cost: 16, icon: '🐉', hp: 4, attack: 4, armor: 1 },
+    { id: 'crystal', name: 'Kristallkopf', cost: 15, icon: '💎', hp: 0, attack: 5, armor: 1 },
+    { id: 'owl', name: 'Eulenvisier', cost: 11, icon: '🦉', hp: 5, attack: 0, armor: 2 },
+    { id: 'knight', name: 'Ritterhelm', cost: 18, icon: '🪖', hp: 12, attack: 0, armor: 3 },
+    { id: 'star', name: 'Sternenhelm', cost: 20, icon: '🌟', hp: 5, attack: 5, armor: 1 }
   ],
   body: [
     { id: 'heart', name: 'Herz', cost: 0, icon: '💖', hp: 0, attack: 0, armor: 0 },
     { id: 'shield', name: 'Panzer', cost: 10, icon: '🛡️', hp: 20, attack: 0, armor: 2 },
     { id: 'bolt', name: 'Turbo', cost: 12, icon: '⚡', hp: 0, attack: 5, armor: 0 },
-    { id: 'shoulders', name: 'Schultern', cost: 14, icon: '🛡️', hp: 12, attack: 0, armor: 3 }
+    { id: 'shoulders', name: 'Schultern', cost: 14, icon: '🛡️', hp: 12, attack: 0, armor: 3 },
+    { id: 'fortress', name: 'Festung', cost: 22, icon: '🏰', hp: 25, attack: 0, armor: 4 },
+    { id: 'crystalcore', name: 'Kristallpanzer', cost: 19, icon: '💠', hp: 8, attack: 5, armor: 1 },
+    { id: 'dragonplate', name: 'Drachenrüstung', cost: 24, icon: '🐲', hp: 15, attack: 5, armor: 2 },
+    { id: 'stealth', name: 'Schattenpanzer', cost: 17, icon: '🌑', hp: 4, attack: 4, armor: 2 }
   ],
   arms: [
     { id: 'hands', name: 'Hände', cost: 0, icon: '👋', hp: 0, attack: 0, armor: 0 },
     { id: 'laser', name: 'Laser', cost: 9, icon: '✨', hp: 0, attack: 4, armor: 0 },
     { id: 'rockets', name: 'Raketen', cost: 14, icon: '🚀', hp: 0, attack: 8, armor: 0 },
     { id: 'blades', name: 'Klingen', cost: 13, icon: '⚔️', hp: 0, attack: 6, armor: 1 },
-    { id: 'champion', name: 'Heldenklingen', cost: 0, icon: '🏆', hp: 0, attack: 9, armor: 1, trophyWins: 5 }
+    { id: 'champion', name: 'Heldenklingen', cost: 0, icon: '🏆', hp: 0, attack: 9, armor: 1, trophyWins: 5 },
+    { id: 'hammer', name: 'Donnerhammer', cost: 17, icon: '🔨', hp: 0, attack: 10, armor: 0 },
+    { id: 'claws', name: 'Drachenklauen', cost: 16, icon: '🐾', hp: 0, attack: 7, armor: 2 },
+    { id: 'cannons', name: 'Plasmakanonen', cost: 20, icon: '💥', hp: 0, attack: 11, armor: 0 },
+    { id: 'staff', name: 'Energiestab', cost: 14, icon: '🪄', hp: 5, attack: 6, armor: 0 },
+    { id: 'saw', name: 'Kreissägen', cost: 15, icon: '⚙️', hp: 0, attack: 8, armor: 1 }
   ],
   legs: [
     { id: 'boots', name: 'Stiefel', cost: 0, icon: '👟', hp: 0, attack: 0, armor: 0 },
     { id: 'hover', name: 'Düsen', cost: 8, icon: '💨', hp: 0, attack: 0, armor: 2 },
-    { id: 'tracks', name: 'Raupen', cost: 11, icon: '🛞', hp: 15, attack: 0, armor: 1 }
+    { id: 'tracks', name: 'Raupen', cost: 11, icon: '🛞', hp: 15, attack: 0, armor: 1 },
+    { id: 'spider', name: 'Spinnenbeine', cost: 14, icon: '🕷️', hp: 5, attack: 3, armor: 2 },
+    { id: 'titan', name: 'Titanstiefel', cost: 16, icon: '🥾', hp: 18, attack: 0, armor: 3 },
+    { id: 'skates', name: 'Blitzgleiter', cost: 12, icon: '🛼', hp: 0, attack: 4, armor: 1 }
+  ],
+  gear: [
+    { id: 'none', name: 'Ohne', cost: 0, icon: '✨', hp: 0, attack: 0, armor: 0 },
+    { id: 'jetpack', name: 'Jetpack', cost: 14, icon: '🚀', hp: 0, attack: 3, armor: 1 },
+    { id: 'wings', name: 'Flügel', cost: 18, icon: '🪽', hp: 4, attack: 2, armor: 2 },
+    { id: 'shieldpack', name: 'Rückenschild', cost: 15, icon: '🛡️', hp: 12, attack: 0, armor: 2 },
+    { id: 'powercore', name: 'Energiekern', cost: 20, icon: '🔋', hp: 0, attack: 6, armor: 1 },
+    { id: 'spikes', name: 'Stachelpanzer', cost: 16, icon: '🌵', hp: 6, attack: 3, armor: 2 },
+    { id: 'banner', name: 'Heldenbanner', cost: 10, icon: '🚩', hp: 6, attack: 1, armor: 1 }
   ]
 };
 
@@ -60,7 +87,7 @@ export const STYLES = Object.freeze([
 export const findStyle = id => STYLES.find(style => style.id === id) || STYLES[0];
 
 export const STARTER_SELECTION = Object.freeze({
-  head: 'smile', body: 'heart', arms: 'hands', legs: 'boots', color: 'mint', style: 'light'
+  head: 'smile', body: 'heart', arms: 'hands', legs: 'boots', gear: 'none', color: 'mint', style: 'light'
 });
 
 export const findPart = (category, id) => PARTS[category]?.find(part => part.id === id) || null;

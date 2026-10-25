@@ -1,8 +1,20 @@
-# Mech-Freunde v0.5 – private Online-Duelle
+# Mech-Freunde v0.6 – mehr Mechs & Freunde
 
 Handyfreundliche PWA ohne Frameworks. Bestehende offline Mechs, Trainingssterne und Pokale bleiben erhalten.
 
-## Neu
+## Neu in v0.6
+
+- **40 Bauteile in 5 Gruppen:** mehr Köpfe, Panzerungen, Waffen, Beine und die neue Kategorie **Zubehör**.
+- **Rückkampf ohne Raumcode:** Nach einem abgeschlossenen Online-Duell können beide Spieler mit einem Knopf eine neue Runde gegen denselben Gegner bestätigen. Die zweite Bestätigung startet automatisch ein frisches Duell.
+- **Spielerprofile:** 100 kindgerechte Fantasienamen aus zwei Wortlisten und 12 feste Icons. Keine Freitext-Namen und kein Chat.
+- **Bestenliste:** Top 20 nach Online-Siegen, nur mit ausdrücklichem Häkchen. Ohne Zustimmung kein Eintrag; keine Nutzer-IDs im Ergebnis.
+- **Kompatibel:** Trainingssterne, Teile, Trophäen und Online-Punkte bleiben bestehen. Die neuen Teile wirken im Training, im Online-Duell sind sie weiterhin rein optisch.
+
+## Server-Update v0.6
+
+Die Datenbankmigration `supabase-v06-upgrade.sql` erweitert die bestehenden `mf5_`-Tabellen ohne Löschen. Neue RPCs: `mf6_rematch`, `mf6_set_identity`, `mf6_leaderboard`; bestehende Match-Snapshots und Profile liefern die neuen Felder. Die Migration muss vor dem Ausrollen der neuen Oberfläche auf das Supabase-Projekt angewendet werden.
+
+## Bereits in v0.5
 
 - 🌍 Private **1-gegen-1-Duelle** über sechsstellige Raumcodes (kein Chat, keine Namenspflicht).
 - ⚔️ Drei Züge: Angriff, Schutz, Spezial (nach drei eigenen Aktionen).

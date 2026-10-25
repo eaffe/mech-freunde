@@ -13,9 +13,16 @@ export class MechRenderer {
     const steel = '#8c99b9';
     const outline = '#1d2747';
     const glow = '#8de8ff';
-    const { head, body, arms, legs } = mech.selection;
+    const { head, body, arms, legs, gear } = mech.selection;
 
-    const legArt = legs === 'hover'
+    const legArt = ['spider','titan','skates'].includes(legs) ? `
+      <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
+        <path d="M124 241H160L158 304H120Z M200 241H236L240 304H202Z" fill="${d}"/>
+        <path d="M98 302H171L173 346H96Z M190 302H264L266 346H188Z" fill="${p}"/>
+        ${legs === 'spider' ? '<path d="M115 284L66 296L46 332M245 284L294 296L314 332M114 303L72 336M246 303L288 336" fill="none" stroke="#8894bd" stroke-width="11" stroke-linecap="round"/>' : ''}
+        ${legs === 'skates' ? `<path d="M99 346H172M189 346H263" stroke="${glow}" stroke-width="12" stroke-linecap="round"/>` : ''}
+        ${legs === 'titan' ? `<path d="M98 313H170M190 313H263" stroke="${metal}" stroke-width="12"/>` : ''}
+      </g>` : legs === 'hover'
       ? `
       <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
         <path d="M131 244L159 244L153 305L126 305Z" fill="${d}"/>
@@ -43,7 +50,16 @@ export class MechRenderer {
         <path d="M106 327H168M194 327H257" stroke="${l}" stroke-width="6" stroke-linecap="round"/>
       </g>`;
 
-    const armArt = arms === 'blades' || arms === 'champion'
+    const armArt = ['hammer','claws','cannons','staff','saw'].includes(arms) ? `
+      <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
+        <path d="M69 144H113L111 217H70Z M247 144H291L290 217H248Z" fill="${d}"/>
+        <path d="M51 210H115L119 255L72 273L48 251Z M245 210H309L312 251L288 273L241 255Z" fill="${p}"/>
+        ${arms === 'hammer' ? `<path d="M74 240L37 310M286 240L323 310" stroke="${steel}" stroke-width="11"/><path d="M10 296L55 311L46 334L2 319Z M350 296L305 311L314 334L358 319Z" fill="${metal}"/>` : ''}
+        ${arms === 'claws' ? `<path d="M70 254L34 300L60 282L54 311L84 277M290 254L326 300L300 282L306 311L276 277" fill="none" stroke="${metal}" stroke-width="10"/>` : ''}
+        ${arms === 'cannons' ? `<circle cx="80" cy="239" r="23" fill="${steel}"/><circle cx="280" cy="239" r="23" fill="${steel}"/><circle cx="80" cy="239" r="12" fill="${glow}"/><circle cx="280" cy="239" r="12" fill="${glow}"/>` : ''}
+        ${arms === 'staff' ? `<path d="M72 249L28 320M288 249L332 320" stroke="${metal}" stroke-width="10"/><circle cx="28" cy="320" r="15" fill="${glow}"/><circle cx="332" cy="320" r="15" fill="${glow}"/>` : ''}
+        ${arms === 'saw' ? `<circle cx="67" cy="273" r="30" fill="${metal}"/><circle cx="293" cy="273" r="30" fill="${metal}"/><circle cx="67" cy="273" r="10" fill="${glow}"/><circle cx="293" cy="273" r="10" fill="${glow}"/>` : ''}
+      </g>` : arms === 'blades' || arms === 'champion'
       ? `
       <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
         <path d="M71 143H113L110 221H75Z" fill="${d}"/>
@@ -83,7 +99,15 @@ export class MechRenderer {
         <path d="M76 238L55 248M91 250L73 266M283 250L301 266M270 238L289 248" stroke="${l}" stroke-width="5" stroke-linecap="round"/>
       </g>`;
 
-    const chestMark = body === 'shoulders'
+    const chestMark = ['fortress','crystalcore','dragonplate','stealth'].includes(body) ? `
+      <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
+        <path d="M112 139L180 156L248 139L251 227L180 260L109 227Z" fill="${body==='stealth'?d:p}"/>
+        <path d="M129 160L180 177L231 160L227 219L180 241L133 219Z" fill="${body==='crystalcore'?glow:d}"/>
+        ${body==='fortress' ? `<path d="M104 154L94 130L119 138L133 124L152 151M256 154L266 130L241 138L227 124L208 151" fill="${metal}"/>` : ''}
+        ${body==='dragonplate' ? `<path d="M151 191L180 167L209 191L180 231Z" fill="${l}"/>` : ''}
+        ${body==='stealth' ? `<path d="M140 201H220" stroke="${glow}" stroke-width="8"/>` : ''}
+        ${body==='crystalcore' ? `<path d="M180 180L199 204L180 231L161 204Z" fill="${metal}"/>` : ''}
+      </g>` : body === 'shoulders'
       ? `<g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
           <path d="M105 137L139 124L157 151L148 190L101 180L85 153Z" fill="${p}"/>
           <path d="M255 137L221 124L203 151L212 190L259 180L275 153Z" fill="${p}"/>
@@ -97,7 +121,15 @@ export class MechRenderer {
         ? `<polygon points="191,174 163,210 182,210 171,246 205,202 186,202" fill="#ffe168" stroke="#ffb739" stroke-width="4"/><circle cx="180" cy="212" r="38" fill="none" stroke="${l}" stroke-width="6"/>`
         : `<g><path d="M180 251L153 238L145 212L161 187H199L215 212L207 238Z" fill="#ffd0df" stroke="${outline}" stroke-width="5"/><path d="M164 214Q171 205 180 213Q189 205 196 214Q196 230 180 239Q164 230 164 214Z" fill="#ff688f"/></g>`;
 
-    const headArt = head === 'samurai'
+    const headArt = ['dragon','crystal','owl','knight','star'].includes(head) ? `
+      <g stroke="${outline}" stroke-width="6" stroke-linejoin="round">
+        <path d="M119 74L145 53H215L241 74L244 116L216 151H144L116 116Z" fill="${p}"/>
+        ${head==='dragon' ? `<path d="M123 76L93 31L149 51L180 21L211 51L267 31L237 76Z" fill="${d}"/><path d="M137 100L168 108M223 100L192 108" stroke="${glow}" stroke-width="11"/>` : ''}
+        ${head==='crystal' ? `<path d="M180 18L227 74L214 129L180 149L146 129L133 74Z" fill="${l}"/><path d="M180 18V148M133 74H227" stroke="${glow}" stroke-width="6"/><path d="M151 101H170M190 101H209" stroke="${outline}" stroke-width="9"/>` : ''}
+        ${head==='owl' ? `<path d="M119 74L105 42L148 62M241 74L255 42L212 62" fill="${d}"/><circle cx="152" cy="103" r="23" fill="${metal}"/><circle cx="208" cy="103" r="23" fill="${metal}"/><circle cx="152" cy="103" r="10" fill="${glow}"/><circle cx="208" cy="103" r="10" fill="${glow}"/>` : ''}
+        ${head==='knight' ? `<path d="M119 73L139 41H221L241 73Z" fill="${metal}"/><path d="M133 96H227L216 125H144Z" fill="${outline}"/><path d="M147 110H213" stroke="${glow}" stroke-width="9"/>` : ''}
+        ${head==='star' ? `<path d="M180 20L192 50L224 51L200 73L208 103L180 87L152 103L160 73L136 51L168 50Z" fill="#ffe38a"/><path d="M143 112L169 112M191 112H217" stroke="${glow}" stroke-width="10"/>` : ''}
+      </g>` : head === 'samurai'
       ? `<g stroke="${outline}" stroke-width="6" stroke-linejoin="round">
           <path d="M125 66L104 25L140 41L159 26L180 48L201 26L220 41L256 25L235 66Z" fill="${d}"/>
           <path d="M180 26L164 49L180 63L196 49Z" fill="#ffdb79"/>
@@ -132,6 +164,16 @@ export class MechRenderer {
         <path d="M162 126L180 136L198 126" fill="none" stroke="${metal}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
       </g>`;
 
+    const gearArt = gear === 'none' ? '' : `
+      <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
+        ${gear==='jetpack' ? `<path d="M96 166L76 156L68 244L94 260L112 235ZM264 166L284 156L292 244L266 260L248 235Z" fill="${steel}"/><path d="M80 260L71 302L91 276M280 260L289 302L269 276" fill="#ffb34e"/>` : ''}
+        ${gear==='wings' ? `<path d="M118 162L69 106L14 94L48 144L18 171L97 211ZM242 162L291 106L346 94L312 144L342 171L263 211Z" fill="${metal}"/><path d="M34 123L100 180M326 123L260 180" stroke="${glow}"/>` : ''}
+        ${gear==='shieldpack' ? `<path d="M82 164L51 178L62 253L91 276L117 248L115 181ZM278 164L309 178L298 253L269 276L243 248L245 181Z" fill="${steel}"/>` : ''}
+        ${gear==='powercore' ? `<circle cx="180" cy="212" r="49" fill="none" stroke="${glow}" stroke-width="10" opacity=".6"/><circle cx="180" cy="212" r="22" fill="${glow}"/>` : ''}
+        ${gear==='spikes' ? `<path d="M118 160L100 104L146 141M242 160L260 104L214 141M104 225L63 196L120 206M256 225L297 196L240 206" fill="${metal}"/>` : ''}
+        ${gear==='banner' ? `<path d="M271 149V31" stroke="${steel}" stroke-width="8"/><path d="M273 32L336 51L273 77Z" fill="${l}"/>` : ''}
+      </g>`;
+
     return `<svg class="${className}" viewBox="${viewBox}" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="${prefix}-armor" x1="0" y1="0" x2="1" y2="1">
@@ -150,6 +192,7 @@ export class MechRenderer {
       <ellipse cx="180" cy="358" rx="120" ry="15" fill="#1d2747" opacity="0.12"/>
       <g filter="url(#${prefix}-shadow)">
         ${legArt}
+        ${gearArt}
         ${armArt}
         <path d="M122 145L150 128H210L238 145L248 214L224 265H136L112 214Z" fill="url(#${prefix}-armor)" stroke="${outline}" stroke-width="7" stroke-linejoin="round"/>
         <path d="M139 154H221" stroke="${l}" stroke-width="7" stroke-linecap="round" opacity="0.95"/>

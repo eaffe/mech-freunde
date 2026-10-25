@@ -1,7 +1,7 @@
 {
   "name": "Mech-Freunde – Mechs bauen und mit Freunden spielen",
   "short_name": "Mech-Freunde",
-  "description": "Mechs bauen, offline trainieren und privat mit Freunden spielen.",
+  "description": "Mechs bauen, neue Waffen und Rüstungen sammeln, privat kämpfen und Rückkämpfe spielen.",
   "id": "./",
   "start_url": "./index.html",
   "scope": "./",
