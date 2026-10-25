@@ -1,28 +1,19 @@
-# Mech-Freunde v0.3
+# Mech-Freunde v0.4
 
-Einfaches Mech-Bauspiel und Offline-Trainingsarena für Android/Chrome und andere Browser. Kein Build-Schritt.
+Kinderfreundliches Mech-Bauspiel / offline Trainingsarena als GitHub-Pages-PWA. Ohne Build-System oder externe Bibliotheken.
 
-## Neu
+## Neuerungen
 
-- Deutlich vergrößerte Mech-Vorschau im Hangar.
-- Samurai-Helm (14 Sterne), Klingen-Arme (13 Sterne), Schulterpanzer (14 Sterne).
-- Drei kostenlose Spielstile mit großer, bebilderter Auswahl: 🪽 Leicht, 💪 Stark, ⚡ Schnell.
-  - **Leicht**: Standardwerte, +7 % Ausweichchance beim Training.
-  - **Stark**: +20 Hülle, +3 Angriff, +1 Schutz.
-  - **Schnell**: −10 Hülle, +1 Angriff, +19 % Ausweichchance beim Training.
-- Rot bleibt weiterhin als auswählbare Mech-Farbe erhalten.
-- Bisherige lokale Sterne, Käufe und Baupläne bleiben erhalten, weil der bestehende IndexedDB-Speicher unverändert ist.
-- Kampf-Effekte aus v0.2 bleiben erhalten.
+- Drei Trainingsgegner zur Auswahl: 💨 Flitzer (ausweichstark), 🛡️ Wächter (verteidigt oft), 🔥 Blitz (höherer Schaden).
+- Drei große Kampfbuttons: ⚔️ Angriff, 🛡️ Schutz und ⚡ Spezial. Spezial lädt sich nach 3 eigenen Aktionen auf.
+- Sichtbare Laserstrahlen, Trefferfunken, Schild- und Spezialeffekte, kurze Mech-Bewegungen, leuchtender Reaktor und Einbau-Effekt im Hangar.
+- Pokale: erster Sieg, erster Sieg mit eingesetztem Spezialangriff, 5 Siege, 10 Siege.
+- 🏆 Heldenklingen werden nach 5 gewonnenen Trainingskämpfen freigeschaltet, 🥇 Goldfarbe nach 10 Siegen.
+- Lokale Trainingssterne: pro Sieg 6/7/8 (abhängig vom Bot), pro Niederlage 2. Bestehende Spielstände und Käufe werden übernommen.
+- Animierte Effekte respektieren die Systemeinstellung „Bewegung reduzieren“.
 
-## Installation / Aktualisierung
+## Hinweise
 
-1. ZIP entpacken.
-2. Sämtliche Dateien aus dem Ordner `mech-freunde-v03` ins Hauptverzeichnis des bestehenden GitHub-Repositories hochladen und ersetzen.
-3. Unter GitHub → Actions/Pages die Veröffentlichung abwarten.
-4. GitHub-Pages-Seite in Chrome neu laden und installierte PWA neu öffnen.
+Alles funktioniert weiterhin offline im lokalen Browser. Es gibt **keine** öffentlich erreichbaren Kinderprofile, keinen Chat und kein PvP. Punkte und Pokale sind lokale Spieldaten, keine Online-Währung. Ein Online-Modus benötigt später sichere Serverfunktionen.
 
-**Wichtig:** Nicht nur das ZIP hochladen, sondern die enthaltenen Dateien. Beim Upload müssen `index.html`, `app.js`, `Renderer.js`, `Parts.js`, `Mech.js`, `TrainingBattle.js`, `style.css` und `service-worker.js` gemeinsam aktualisiert werden.
-
-## Fortschritt
-
-Spielstände sind nur auf dem jeweiligen Gerät gespeichert. Online-Duelle und Online-Credits sind noch nicht enthalten.
+Beim Hochladen auf GitHub müssen die vorhandenen Dateien im Repository-Hauptverzeichnis überschrieben und `TrainingBots.js` neu hinzugefügt werden. Der Service Worker verwendet `mech-freunde-v04`.

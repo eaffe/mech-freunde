@@ -25,7 +25,8 @@ export const PARTS = {
     { id: 'hands', name: 'Hände', cost: 0, icon: '👋', hp: 0, attack: 0, armor: 0 },
     { id: 'laser', name: 'Laser', cost: 9, icon: '✨', hp: 0, attack: 4, armor: 0 },
     { id: 'rockets', name: 'Raketen', cost: 14, icon: '🚀', hp: 0, attack: 8, armor: 0 },
-    { id: 'blades', name: 'Klingen', cost: 13, icon: '⚔️', hp: 0, attack: 6, armor: 1 }
+    { id: 'blades', name: 'Klingen', cost: 13, icon: '⚔️', hp: 0, attack: 6, armor: 1 },
+    { id: 'champion', name: 'Heldenklingen', cost: 0, icon: '🏆', hp: 0, attack: 9, armor: 1, trophyWins: 5 }
   ],
   legs: [
     { id: 'boots', name: 'Stiefel', cost: 0, icon: '👟', hp: 0, attack: 0, armor: 0 },
@@ -41,7 +42,8 @@ export const COLORS = [
   { id: 'orange', label: 'Orange', primary: '#ffad53', light: '#ffe29b', dark: '#d77537' },
   { id: 'purple', label: 'Lila', primary: '#ac85f4', light: '#decfff', dark: '#785aca' },
   { id: 'lime', label: 'Limette', primary: '#96c953', light: '#dcffa0', dark: '#608d31' },
-  { id: 'red', label: 'Rot', primary: '#df4343', light: '#ffb2b2', dark: '#9f2323' }
+  { id: 'red', label: 'Rot', primary: '#df4343', light: '#ffb2b2', dark: '#9f2323' },
+  { id: 'gold', label: 'Gold', primary: '#e7ab27', light: '#fff1a8', dark: '#a26315', trophyWins: 10 }
 ];
 
 // Drei sofort verfügbare Spielstile ohne Stern-Kosten.

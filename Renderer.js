@@ -43,7 +43,7 @@ export class MechRenderer {
         <path d="M106 327H168M194 327H257" stroke="${l}" stroke-width="6" stroke-linecap="round"/>
       </g>`;
 
-    const armArt = arms === 'blades'
+    const armArt = arms === 'blades' || arms === 'champion'
       ? `
       <g stroke="${outline}" stroke-width="5" stroke-linejoin="round">
         <path d="M71 143H113L110 221H75Z" fill="${d}"/>
@@ -52,9 +52,10 @@ export class MechRenderer {
         <path d="M252 207L295 207L296 247L271 266L241 248Z" fill="${p}"/>
         <path d="M77 247L49 259L28 290L63 280L99 259Z" fill="${metal}"/>
         <path d="M283 247L311 259L332 290L297 280L261 259Z" fill="${metal}"/>
-        <path d="M49 259L28 290L63 280" fill="none" stroke="${glow}" stroke-width="5"/>
-        <path d="M311 259L332 290L297 280" fill="none" stroke="${glow}" stroke-width="5"/>
+        <path d="M49 259L28 290L63 280" fill="none" stroke="${arms === 'champion' ? '#ffe168' : glow}" stroke-width="5"/>
+        <path d="M311 259L332 290L297 280" fill="none" stroke="${arms === 'champion' ? '#ffe168' : glow}" stroke-width="5"/>
         <path d="M78 219L105 233M255 233L282 219" stroke="${l}" stroke-width="7"/>
+        ${arms === 'champion' ? '<path d="M39 275L27 305L51 292M321 275L333 305L309 292" fill="none" stroke="#ffe168" stroke-width="6" stroke-linecap="round"/>' : ''}
       </g>`
       : arms === 'rockets'
       ? `
@@ -158,6 +159,7 @@ export class MechRenderer {
         ${chestMark}
         <path d="M168 150H192V166H168Z" fill="#203056" stroke="${outline}" stroke-width="4"/>
         ${headArt}
+        <g class="reactor-glow"><circle cx="180" cy="169" r="5" fill="${glow}"/></g>
         ${mech.selection.style === 'fast'
           ? `<path d="M89 280L52 294M104 292L67 306M271 280L308 294M256 292L293 306" stroke="${glow}" stroke-width="5" stroke-linecap="round" opacity=".85"/>`
           : mech.selection.style === 'strong'

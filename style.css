@@ -264,3 +264,55 @@ button:focus-visible { outline: 3px solid #48d5ff; outline-offset: 3px; }
   .part-art { height:98px; }
 }
 @media (max-height:640px) { .hangar-stage { min-height:385px; height:385px; } }
+
+
+/* v0.4 · lebendiger Hangar, bildbasierte Gegnerwahl und animierte Kampfaktionen */
+.version-chip { font-size:10px; color:#b4d5ff; vertical-align:middle; font-weight:800; }
+.hangar-stage .reactor-glow { animation: mechGlitter 2.5s ease-in-out infinite; transform-origin: 180px 169px; }
+@keyframes mechGlitter { 0%,100% { opacity:.55; filter:drop-shadow(0 0 1px #75ecff); } 50% { opacity:1; filter:drop-shadow(0 0 10px #75ecff); } }
+.hangar-stage.is-installing .mech-picture { animation:installPart .55s ease-out both; }
+.hangar-stage.is-installing::before { animation:installFlash .55s ease-out both; }
+@keyframes installPart { 0% { transform:scale(.91) translateY(10px); filter:brightness(2) drop-shadow(0 0 24px #72dfff); } 75% {transform:scale(1.03) translateY(-3px);} 100% {transform:scale(1) translateY(0);} }
+@keyframes installFlash { 0%,100% { box-shadow:none; } 50% { box-shadow:inset 0 0 65px #62e4ff7d; } }
+.trophy-panel { margin:16px 0 8px; padding:12px 10px 14px; border-radius:19px; border:2px solid #526ba0; background:linear-gradient(180deg,#1b2b4f,#121c35); }
+.trophy-title { font-size:18px; font-weight:1000; text-align:center; margin:1px 0 12px; }
+.trophy-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.trophy-tile { display:flex; min-width:0; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-height:96px; padding:7px 2px; border-radius:13px; background:#202f51; border:2px solid #415677; }
+.trophy-tile.earned { background:linear-gradient(180deg,#5b4c25,#2d3548); border-color:#ffd66b; }
+.trophy-tile.locked { color:#94a1ba; }
+.trophy-icon { font-size:27px; line-height:1.2; }
+.trophy-count { font-size:14px; font-weight:1000; }
+.trophy-label { font-size:10px; line-height:1.15; text-align:center; font-weight:900; }
+.color-card.is-locked .color-dot { filter:saturate(.45); }
+.opponent-list { display:flex; flex-direction:column; gap:12px; padding:4px 0 16px; }
+.opponent-card { display:flex; align-items:center; gap:10px; min-height:158px; width:100%; padding:10px; text-align:left; color:#f5f9ff; border:2px solid #668bbf; border-radius:21px; background:linear-gradient(125deg,#233659,#131f36); box-shadow:0 5px 0 #0d152a; }
+.opponent-card:active { transform:translateY(3px); box-shadow:0 2px 0 #0d152a; }
+.opponent-art { display:block; height:137px; width:42%; flex-shrink:0; background:radial-gradient(ellipse,#ffffff12,transparent 73%); border-radius:15px; }
+.opponent-art .mech-picture { width:100%; height:100%; }
+.opponent-info { display:flex; flex-direction:column; gap:9px; min-width:0; flex:1; }
+.opponent-name { font-size:22px; font-weight:1000; }
+.opponent-hint { font-size:17px; color:#c2d5f5; font-weight:900; }
+.opponent-reward { display:inline-flex; width:max-content; align-items:center; font-size:17px; padding:3px 9px; border-radius:20px; color:#362a08; background:linear-gradient(180deg,#fff5a5,#ffd167); font-weight:1000; }
+.opponent-go { display:grid; place-items:center; flex-shrink:0; width:32px; height:36px; border-radius:10px; background:#2f618f; color:#bbfaff; font-size:18px; }
+.arena-monitor { z-index:4; }
+.fighter-visual.is-attacking { animation:mechAttack .48s ease-out; }
+@keyframes mechAttack { 0%,100% {transform:translateY(0)} 37% {transform:translateY(-8px) scale(1.055)} 66% {transform:translateY(2px)} }
+.monitor-fx.special-beam { height:15px; background:linear-gradient(90deg,#fffbd3,#fff676,#ffa843,#ffffff); box-shadow:0 0 22px #fff777,0 0 46px #ffe466; animation-duration:.56s; }
+.electric-ring { position:absolute; top:50%; width:90px; height:90px; border:5px solid #ffe873; border-radius:50%; opacity:0; transform:translateY(-50%) scale(.1); box-shadow:0 0 28px #fff6a2; animation:electricRing .65s ease-out forwards; }
+.electric-ring.right { right:15%; }
+@keyframes electricRing { 20% {opacity:1} 100% {opacity:0; transform:translateY(-50%) scale(1.5);} }
+.spark-burst { position:absolute; top:41%; font-size:50px; color:#fff2a1; text-shadow:0 0 15px #ffc65b; animation:spark .55s ease-out forwards; }
+.spark-burst.right { right:17%; } .spark-burst.left {left:17%;}
+@keyframes spark { from {opacity:0;transform:scale(.1) rotate(0deg)} 35% {opacity:1;} to {opacity:0;transform:scale(1.7) rotate(45deg)} }
+.monitor-guard.right, .monitor-miss.right { right:17%; left:auto; }
+.battle-actions { grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; }
+.battle-button { min-height:104px; border-radius:17px; font-size:15px; gap:3px; padding:6px 3px; }
+.battle-button .battle-icon { font-size:38px; }
+.battle-button.special { background:linear-gradient(180deg,#efc65d,#a26822); box-shadow:0 7px 0 #624217; }
+.battle-button.special:disabled { opacity:.7; background:linear-gradient(180deg,#7b808e,#494d5e); box-shadow:0 7px 0 #343747; }
+.power-meter { display:flex; gap:3px; }
+.power-cell { width:16px; height:5px; background:#151c36; border:1px solid #ffebad; border-radius:4px; }
+.power-cell.charged { background:#fff0a8; box-shadow:0 0 8px #ffdc75; }
+.result-back { justify-content:center; width:100%; margin:12px auto 0; }
+@media (max-width:365px) { .opponent-name {font-size:19px;} .opponent-art {width:37%;} .battle-button {font-size:13px;} }
+@media (prefers-reduced-motion:reduce) { .hangar-stage .reactor-glow {animation:none} }

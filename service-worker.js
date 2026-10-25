@@ -1,7 +1,7 @@
-const CACHE_NAME = 'mech-freunde-v03';
+const CACHE_NAME = 'mech-freunde-v04';
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './Parts.js',
-  './Mech.js', './Pilot.js', './Renderer.js', './Store.js', './TrainingBattle.js',
+  './Mech.js', './Pilot.js', './Renderer.js', './Store.js', './TrainingBattle.js', './TrainingBots.js',
   './manifest.webmanifest', './icon-192.png', './icon-512.png'
 ];
 
