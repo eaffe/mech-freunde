@@ -1,6 +1,13 @@
-# Mech-Freunde v1.0 – Mech-Garage, Freunde und Turniere
+# Mech-Freunde v1.1 – Adaptive Trainingsgegner, Mech-Garage und Freunde
 
 Kindgerechte, mobil nutzbare PWA ohne Frameworks. Privatduelle über Supabase, Training auch offline. Bestehende Spielstände, Sterne, Pokale, Profile und Online-Punkte bleiben erhalten.
+
+## Trainingsbalance in v1.1
+
+- Flitzer, Wächter und Blitz passen sich an **Leben, Angriff, Rüstung und Ausweichen** des eigenen Mechs an. Die selbst gebaute Gegnerausrüstung zählt weiterhin.
+- Pro Trainingskampf wird genau eine kleine Schwankung ausgewürfelt: ungefähr 20 % etwas entspannter, 30 % anspruchsvoller und 50 % normal. Es gibt keine erzwungenen Siege oder Niederlagen.
+- Nach einer Niederlage wird die nächste Trainingsrunde sanfter, nach zwei aufeinanderfolgenden Niederlagen noch etwas sanfter.
+- Gegnerstärke und Tagesform werden angezeigt. Die Anpassung betrifft ausschließlich Offline-Training; Online-Kämpfe bleiben unverändert.
 
 ## Neue Funktionen
 

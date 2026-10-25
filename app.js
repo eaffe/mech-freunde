@@ -4,7 +4,7 @@ import { MechRenderer } from './Renderer.js';
 import { Pilot } from './Pilot.js';
 import { PilotStore } from './Store.js';
 import { TrainingBattle } from './TrainingBattle.js';
-import { TRAINING_BOTS, getTrainingBot, getTrainingBotStats } from './TrainingBots.js';
+import { TRAINING_BOTS, getTrainingBot, getAdaptiveTrainingBotStats } from './TrainingBots.js';
 import { OnlineService, ONLINE_PAINTS, ONLINE_AVATARS, NAME_FIRST, NAME_SECOND } from './OnlineService.js';
 
 const safeText = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -266,7 +266,7 @@ class MechFriendsApp {
         }).join('')}</div>`;
 
     return `<header class="topbar">
-      <div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.0</small></span></div>
+      <div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.1</small></span></div>
       ${this.starBank()}
     </header>
     <main>
@@ -321,7 +321,7 @@ class MechFriendsApp {
     const p = this.onlineProfile;
     const b = this.onlineMatch;
     const busy = this.onlineBusy;
-    const header = `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.0</small></span></div>${this.starBank()}</header>
+    const header = `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.1</small></span></div>${this.starBank()}</header>
       <main><div class="training-top"><button class="back-button" data-action="online-back" aria-label="Zurück zum Hangar"><span>⬅️</span> Hangar</button>
       <div class="round-label">🌍 Privat</div></div><h1 class="section-title">🌍 Freunde-Duell</h1>`;
     if (!this.online.configured) return `${header}
@@ -785,15 +785,16 @@ class MechFriendsApp {
   }
 
   chooseMarkup() {
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.0</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.1</small></span></div>${this.starBank()}</header>
       <main>
         <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Hangar"><span>⬅️</span> Hangar</button>
           <div class="round-label">🎯 Training</div></div>
         <h1 class="section-title">🤖 Wähle einen Bot!</h1>
         <p class="opponent-builder-intro">🛠️ Jeder Trainingsgegner kann einen eigenen Mech bekommen!</p>
+         <p class="training-balance-info">🧠 Die Gegner passen sich deinem Mech an. Jeder Kampf ist etwas anders. Nach Niederlagen wird es leichter. 💜</p>
         <div class="opponent-list">${TRAINING_BOTS.map(bot => {
           const enemy=this.pilot.trainingMech(bot.id);
-          const stats=getTrainingBotStats(bot.id,enemy);
+          const stats=getAdaptiveTrainingBotStats(bot.id,this.pilot.mech.stats,enemy);
           return `<div class="opponent-card-wrap"><button class="opponent-card" data-action="pick-bot" data-value="${bot.id}" aria-label="Gegen ${bot.label} kämpfen">
             <span class="opponent-art">${MechRenderer.draw(enemy, { label: bot.label })}</span>
             <span class="opponent-info"><span class="opponent-name">${bot.icon} ${bot.label}</span>
@@ -835,7 +836,7 @@ class MechFriendsApp {
         <span class="part-art">${MechRenderer.draw(mech.withPart(category.id,part.id),{viewBox:category.viewBox,label:part.name})}</span>
         <span class="part-name">${part.name}</span><span class="part-cost owned">${mech.selection[category.id]===part.id?'✅':'🔧'}</span>
       </button>`).join('')}</div>`;
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.0</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.1</small></span></div>${this.starBank()}</header>
       <main class="bot-builder"><div class="training-top"><button class="back-button" data-action="bot-edit-back">⬅️ Alle Gegner</button>
       <div class="round-label">🛠️ Gegner-Baukasten</div></div>
       <h1 class="section-title">${bot.icon} ${bot.label} ausrüsten</h1>
@@ -889,6 +890,7 @@ class MechFriendsApp {
         <div class="emoji">${b.winner === 'player' ? '🏆⚡' : '🤖💜'}</div>
         <h2>${b.winner === 'player' ? 'Gewonnen!' : 'Weiter trainieren!'}</h2>
         <p>⭐ +${b.reward || 0}</p>
+         ${b.winner !== 'player' ? '<p class="training-kind-note">💜 Gut gekämpft! Der nächste Versuch wird etwas leichter.</p>' : ''}
         <button class="primary-action" data-action="again" aria-label="Noch einmal trainieren"><span class="action-icon">🔁</span> Nochmal!</button>
         <button class="back-button result-back" data-action="choose-again" aria-label="Anderen Gegner wählen">🤖 Andere Bots</button>
       </section>` : `<div class="battle-message" role="status" aria-live="polite"><span>${b.lastEvent.icon}</span>${b.lastEvent.message}</div>
@@ -897,10 +899,11 @@ class MechFriendsApp {
         <button class="battle-button shield" data-action="shield" ${blocked ? 'disabled' : ''} aria-label="Mit Schild schützen"><span class="battle-icon">🛡️</span><span>Schutz</span></button>
         <button class="battle-button special" data-action="special" ${blocked || !b.specialReady ? 'disabled' : ''} aria-label="Spezialangriff ${b.specialReady ? 'bereit' : 'lädt sich auf'}"><span class="battle-icon">⚡</span><span>Spezial</span>${power}</button>
       </div>`;
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.0</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.1</small></span></div>${this.starBank()}</header>
       <main>
         <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Baukasten"><span>⬅️</span> Hangar</button><div class="round-label">🎯 Training</div></div>
         <h1 class="section-title">⚔️ ${b.bot.icon} ${b.bot.label}</h1>
+         <p class="training-balance-info" role="status">${b.bot.difficultyLabel} · ❤️ ${b.maxBotHp} · 🛡️ ${b.bot.armor}</p>
         <section class="arena" aria-label="Roboterduell">
           <div class="arena-monitor" aria-hidden="true"><div class="scanline"></div>${fx.monitor}</div>
           <div class="fighters">
@@ -923,7 +926,9 @@ class MechFriendsApp {
     this.stopBot();
     this.botId = TRAINING_BOTS.some(bot => bot.id === botId) ? botId : 'scout';
     this.enemy = this.pilot.trainingMech(this.botId);
-    this.battle = new TrainingBattle(this.pilot.mech, this.botId, Math.random, this.enemy);
+    const recentLosses = this.pilot.history.slice(0, 2).filter((entry, i, all) =>
+       !entry.won && all.slice(0, i).every(previous => !previous.won)).length;
+     this.battle = new TrainingBattle(this.pilot.mech, this.botId, Math.random, this.enemy, { recentLosses });
     this.rewardApplied = false;
     if (this.screen === 'hangar') {
       history.pushState({ mechFriendsScreen: 'train' }, '', `${location.pathname}${location.search}#training`);

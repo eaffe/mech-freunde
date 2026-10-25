@@ -441,3 +441,7 @@ html[data-arena="space"] .hangar-stage,html[data-arena="space"] .arena {backgrou
 .tourney-bracket small {color:#bde4ff}
 .online-panel .online-small {margin-top:9px}
 @media(max-width:420px){.feature-panel{padding:12px}.online-quick-link{flex-basis:42%}.garage-tab{padding:9px}}
+
+/* v1.1: Trainingsbalance */
+.training-balance-info{margin:8px 0 14px;padding:11px 13px;border:1px solid #5f87bd;background:#132a4c;border-radius:13px;line-height:1.5;color:#e0f2ff;font-weight:700;text-align:center}
+.training-kind-note{color:#ffddea;font-weight:750;line-height:1.5}

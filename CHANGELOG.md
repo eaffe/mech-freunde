@@ -1,5 +1,11 @@
 # Änderungen
 
+## v1.1 – Dynamische und kinderfreundliche Trainingsgegner
+- Stärke der drei Trainingsbots passt sich an Leben, Angriff, Rüstung und Ausweichwert des aktuellen Mechs an.
+- Milde Schwankungen: manchmal entspannter, manchmal etwas anspruchsvoller.
+- Nach einer oder zwei Niederlagen wird die nächste Runde sanfter.
+- Trainingsbot-Baukasten, verdiente Sterne, Online-Punkte und Duellregeln bleiben erhalten.
+
 ## v1.0 – Mech-Garage, freie Namen und Freunde
 - Linken und rechten Arm separat ausrüsten; vorhandene Armteile gemeinsam freischalten und alte Mechs automatisch übernehmen.
 - Bis zu fünf gespeicherte Mechs und benennbare Garage.

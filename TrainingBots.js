@@ -43,3 +43,46 @@ export function getTrainingBotStats(id, enemyMech = null) {
 export function makeTrainingMech(id) {
   return new Mech(getTrainingBot(id).mech);
 }
+
+const trainingClamp = (low, high, value) => Math.max(low, Math.min(high, value));
+
+// Nur Offline-Training: vorhandene Ausrüstung zählt, Online-Kämpfe bleiben unberührt.
+export function getAdaptiveTrainingBotStats(id, playerStats, enemyMech = null, options = {}) {
+  const base = getTrainingBotStats(id, enemyMech);
+  const stats = playerStats || {};
+  const hp = trainingClamp(70, 240, Number(stats.hp) || 95);
+  const attack = trainingClamp(12, 65, Number(stats.attack) || 18);
+  const armor = trainingClamp(0, 20, Number(stats.armor) || 0);
+  const dodge = trainingClamp(0, 0.3, Number(stats.dodge) || 0);
+  const variation = trainingClamp(-0.2, 0.2, Number(options.variation) || 0);
+  const lossStreak = trainingClamp(0, 2, Number(options.recentLosses) || 0);
+  const relief = lossStreak * 0.07;
+  const intensity = trainingClamp(0.75, 1.20, 1 + variation - relief);
+  const progress = trainingClamp(0, 2.2,
+    Math.max(0, attack - 18) / 32 * 0.80 +
+    Math.max(0, hp - 95) / 105 * 0.55 +
+    armor / 13 * 0.55 + Math.max(0, dodge - 0.07) * 0.70);
+
+  const adjustedArmor = trainingClamp(0, 14, Math.round(base.armor + progress * 1.2 * intensity));
+  const expectedPlayerHit = Math.max(4, attack * 0.94 - adjustedArmor);
+  const expectedBotHp = Math.round(expectedPlayerHit * (4.7 + progress * 0.18) *
+    Math.max(0.45, 0.88 - base.dodge) * intensity);
+  const adjustedHp = trainingClamp(45, 320, Math.max(base.hp, expectedBotHp));
+  const bonus = Math.round(Math.max(0, attack - 18) * 0.4 +
+    Math.max(0, hp - 95) * 0.125 + armor * 0.8 + Math.max(0, dodge - 0.07) * 15);
+  const attackMin = Math.max(4, Math.round((base.attackMin + bonus) * intensity));
+  const attackMax = Math.max(attackMin + 3, Math.round((base.attackMax + bonus) * intensity));
+
+  const difficultyLabel = lossStreak >= 2 ? '💜 Mutmachrunde'
+    : variation > 0.12 ? '🔥 Heute etwas kniffliger'
+    : variation > 0 ? '⚡ Heute etwas wacher'
+    : variation < 0 ? '🌱 Heute etwas entspannter' : '🤖 Angepasst an deinen Mech';
+
+  return {
+    ...base, hp: adjustedHp, armor: adjustedArmor, attackMin, attackMax,
+    accuracy: trainingClamp(0.60, 0.96, base.accuracy + progress * 0.035 + variation * 0.14 - relief * 0.16),
+    dodge: trainingClamp(0.025, 0.30, base.dodge + progress * 0.02 + variation * 0.08 - relief * 0.05),
+    guardChance: trainingClamp(0.02, 0.24, base.guardChance + progress * 0.015 - relief * 0.06),
+    difficultyLabel
+  };
+}

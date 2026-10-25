@@ -1,13 +1,18 @@
-import { getTrainingBotStats } from './TrainingBots.js';
+import { getAdaptiveTrainingBotStats } from './TrainingBots.js';
 
 // Einfache, testbare Offline-Kampfregeln mit drei unterschiedlichen Bot-Strategien.
 // Für Online-Punkte darf ausschließlich ein zukünftiger Server Ergebnisse vergeben.
 export class TrainingBattle {
-  constructor(mech, botId = 'scout', rng = Math.random, enemyMech = null) {
+  constructor(mech, botId = 'scout', rng = Math.random, enemyMech = null, options = {}) {
     // Rückwärtskompatibilität zu Aufrufern aus v0.3: (mech, rng)
     if (typeof botId === 'function') { rng = botId; botId = 'scout'; }
     this.rng = rng;
-    this.bot = getTrainingBotStats(botId, enemyMech);
+    // Eine kleine, zufällige Variation bei Spielbeginn; keine künstlich erzwungenen Siege oder Niederlagen.
+    const roll = Math.max(0, Math.min(0.99999, Number(this.rng()) || 0));
+    const variation = roll < 0.12 ? 0.16 : roll < 0.30 ? 0.08 : roll < 0.50 ? -0.12 : 0;
+    this.bot = getAdaptiveTrainingBotStats(botId, mech.stats, enemyMech, {
+      variation, recentLosses: options.recentLosses || 0
+    });
     this.maxPlayerHp = mech.stats.hp;
     this.playerHp = this.maxPlayerHp;
     this.maxBotHp = this.bot.hp;
