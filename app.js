@@ -4,7 +4,7 @@ import { MechRenderer } from './Renderer.js';
 import { Pilot } from './Pilot.js';
 import { PilotStore } from './Store.js';
 import { TrainingBattle } from './TrainingBattle.js';
-import { TRAINING_BOTS, makeTrainingMech } from './TrainingBots.js';
+import { TRAINING_BOTS, getTrainingBot, getTrainingBotStats } from './TrainingBots.js';
 import { OnlineService, ONLINE_PAINTS, ONLINE_AVATARS, NAME_FIRST, NAME_SECOND } from './OnlineService.js';
 
 const safeText = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -22,7 +22,9 @@ class MechFriendsApp {
     this.rewardApplied = false;
     this.sound = false;
     this.botId = 'scout';
-    this.enemy = makeTrainingMech(this.botId);
+    this.botEditId = 'scout';
+    this.botEditCategory = 'head';
+    this.enemy = this.pilot.trainingMech(this.botId);
     this.saving = Promise.resolve();
     this.online = new OnlineService();
     this.onlineProfile = null;
@@ -146,6 +148,23 @@ class MechFriendsApp {
     if (action.startsWith('online-')) { this.handleOnlineAction(action, button); return; }
     if (action === 'train') this.chooseTraining();
     if (action === 'pick-bot') this.startTraining(button.dataset.value);
+    if (action === 'edit-bot') { this.openBotEditor(button.dataset.value); return; }
+    if (action === 'bot-edit-back') { this.screen='choose'; this.render(); return; }
+    if (action === 'bot-edit-fight') { this.startTraining(this.botEditId); return; }
+    if (action === 'bot-edit-reset') {
+      if (window.confirm('Gegner wirklich auf die ursprüngliche Ausstattung zurücksetzen?')) {
+        this.pilot.resetTrainingBot(this.botEditId); this.save(); this.render(); this.showToast('🔄 Gegner zurückgesetzt');
+      }
+      return;
+    }
+    if (action === 'bot-edit-category') { this.botEditCategory=button.dataset.value; this.render(); return; }
+    if (action === 'bot-edit-part' || action === 'bot-edit-color' || action === 'bot-edit-style') {
+      const category = action === 'bot-edit-part' ? this.botEditCategory : action === 'bot-edit-color' ? 'color' : 'style';
+      if (this.pilot.equipTrainingBot(this.botEditId,category,button.dataset.value)) {
+        this.save(); this.render(); this.showToast('🔧 Gegner ausgerüstet!');
+      }
+      return;
+    }
     if (action === 'back') this.backToHangar();
     if (action === 'attack' || action === 'shield' || action === 'special') this.playTurn(action);
     if (action === 'again') this.startTraining(this.botId);
@@ -159,6 +178,7 @@ class MechFriendsApp {
 
   render() {
     this.root.innerHTML = this.screen === 'online' ? this.onlineMarkup()
+      : this.screen === 'bot-editor' ? this.botEditorMarkup()
       : this.screen === 'train' ? this.trainingMarkup()
       : this.screen === 'choose' ? this.chooseMarkup() : this.hangarMarkup();
   }
@@ -208,7 +228,7 @@ class MechFriendsApp {
         }).join('')}</div>`;
 
     return `<header class="topbar">
-      <div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.7</small></span></div>
+      <div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.8</small></span></div>
       ${this.starBank()}
     </header>
     <main>
@@ -247,7 +267,7 @@ class MechFriendsApp {
     const p = this.onlineProfile;
     const b = this.onlineMatch;
     const busy = this.onlineBusy;
-    const header = `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.7</small></span></div>${this.starBank()}</header>
+    const header = `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.8</small></span></div>${this.starBank()}</header>
       <main><div class="training-top"><button class="back-button" data-action="online-back" aria-label="Zurück zum Hangar"><span>⬅️</span> Hangar</button>
       <div class="round-label">🌍 Privat</div></div><h1 class="section-title">🌍 Freunde-Duell</h1>`;
     if (!this.online.configured) return `${header}
@@ -279,14 +299,19 @@ class MechFriendsApp {
       const otherAvatar = mySide === 'host' ? b.guestAvatar : b.hostAvatar;
       const requested = mySide === 'host' ? b.rematchHost : b.rematchGuest;
       const otherRequested = mySide === 'host' ? b.rematchGuest : b.rematchHost;
+      const rematchDeclined=Boolean(b.rematchDeclined);
       const result = b.status === 'waiting' ? `<div class="online-panel"><div class="online-big-icon">⏳</div>
          <p>Code an Freund weitergeben</p><div class="room-code" aria-label="Raumcode ${b.code}">${b.code}</div>
          <button class="online-wide" data-action="online-copy">📋 Code kopieren</button>
          <button class="online-small" data-action="online-cancel" ${busy?'disabled':''}>❌ Raum schließen</button></div>`
         : b.status === 'finished' ? `<div class="online-panel"><div class="online-big-icon">${b.winner===mySide?'🏆🎉':'🤖💜'}</div>
           <h2>${last.kind==='forfeit'?(b.winner===mySide?'Dein Gegner hat aufgegeben! +10 🏅':'Du hast aufgegeben.'):(b.winner===mySide?'Gewonnen! +10 🏅':'Gut gespielt!')}</h2>
-          ${otherRequested ? '<p class="rematch-invite">💌 Dein Freund möchte noch einmal kämpfen!</p>' : ''}
-          <button class="online-wide rematch-primary" data-action="online-rematch" ${busy||requested?'disabled':''}>${requested?'⏳ Warte auf deinen Freund …':'🔁 Nochmal gegen denselben Freund'}</button>
+          ${rematchDeclined ? '<p class="rematch-declined" role="status">🚫 Kein Rückkampf: Ein Spieler hat abgelehnt.</p>'
+            : otherRequested ? '<p class="rematch-invite">💌 Dein Freund möchte noch einmal kämpfen!</p>' : ''}
+          ${rematchDeclined ? '' : `<div class="rematch-choices">
+            <button class="online-wide rematch-primary" data-action="online-rematch" ${busy||requested?'disabled':''}>${requested?'⏳ Warte auf deinen Freund …':'🔁 Noch eine Runde? Ja!'}</button>
+            <button class="online-wide rematch-decline" data-action="online-rematch-decline" ${busy?'disabled':''}>🙅 Nein, danke</button>
+          </div>`}
           <button class="online-small" data-action="online-new" ${busy?'disabled':''}>🆕 Anderes Duell erstellen</button>
           <button class="online-small" data-action="online-lobby">🏠 Zur Übersicht</button></div>`
         : `<div class="online-message" role="status" aria-live="polite">${eventIcon} ${last.kind==='join'?'Bereit!':last.kind==='guard'?(byYou?'Schild an!':'Freund schützt sich!'):
@@ -447,9 +472,14 @@ class MechFriendsApp {
         this.onlineProfile=await this.online.setIdentity(`${first} ${second}`,this.onlineAvatarDraft,this.onlinePublicDraft);
         this.onlineProfileOpen=false; this.showToast('✨ Profil gespeichert!');
       } else if (action==='online-rematch') {
+        if (this.onlineMatch?.status!=='finished' || this.onlineMatch.rematchDeclined) return;
         const value=await this.online.rematch(this.onlineMatch.id);
         this.onlineMatch=value;
         if (value.status==='active') this.showToast('⚔️ Nächste Runde startet!');
+      } else if (action==='online-rematch-decline') {
+        if (this.onlineMatch?.status!=='finished' || this.onlineMatch.rematchDeclined) return;
+        this.onlineMatch=await this.online.declineRematch(this.onlineMatch.id);
+        this.showToast('🙅 Rückkampf abgelehnt');
       } else if (action==='online-create' || action==='online-new') {
         this.onlineMatch=await this.online.create(this.pilot.mech.selection);
         this.onlineDismissedMatch=null;
@@ -499,23 +529,58 @@ class MechFriendsApp {
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
-  chooseMarkup() {
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.7</small></span></div>${this.starBank()}</header>
-      <main>
-        <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Hangar"><span>⬅️</span> Hangar</button>
-          <div class="round-label">🎯 Training</div></div>
-        <h1 class="section-title">🤖 Wähle einen Bot!</h1>
-        <div class="opponent-list">${TRAINING_BOTS.map(bot => `<button class="opponent-card" data-action="pick-bot" data-value="${bot.id}" aria-label="Gegen ${bot.label} kämpfen">
-          <span class="opponent-art">${MechRenderer.draw(makeTrainingMech(bot.id), { label: bot.label })}</span>
-          <span class="opponent-info"><span class="opponent-name">${bot.icon} ${bot.label}</span>
-            <span class="opponent-hint">${bot.hint} &nbsp; ❤️ ${bot.hp}</span>
-            <span class="opponent-reward">⭐ ${bot.reward}</span></span>
-          <span class="opponent-go" aria-hidden="true">▶</span>
-        </button>`).join('')}</div>
-      </main>`;
-  }
+  chooseMarkup(){
+  return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.8</small></span></div>${this.starBank()}</header>
+    <main><div class="training-top"><button class="back-button" data-action="back">⬅️ Hangar</button><div class="round-label">🎯 Training</div></div>
+    <h1 class="section-title">🤖 Wähle einen Bot!</h1>
+    <p class="opponent-builder-intro">🛠️ Jeder Trainingsgegner kann einen eigenen Mech bekommen!</p>
+    <div class="opponent-list">${TRAINING_BOTS.map(bot=>{
+      const enemy=this.pilot.trainingMech(bot.id);
+      const stats=getTrainingBotStats(bot.id,enemy);
+      return `<div class="opponent-card-wrap"><button class="opponent-card" data-action="pick-bot" data-value="${bot.id}" aria-label="Gegen ${bot.label} kämpfen">
+        <span class="opponent-art">${MechRenderer.draw(enemy,{label:bot.label})}</span>
+        <span class="opponent-info"><span class="opponent-name">${bot.icon} ${bot.label}</span>
+        <span class="opponent-hint">${bot.hint} &nbsp; ❤️ ${stats.hp} &nbsp; 🛡️ ${stats.armor}</span>
+        <span class="opponent-reward">⭐ ${bot.reward}</span></span>
+        <span class="opponent-go" aria-hidden="true">▶</span></button>
+        <button class="opponent-edit" data-action="edit-bot" data-value="${bot.id}">🛠️ ${bot.label} bauen & ausrüsten</button></div>`;
+    }).join('')}</div></main>`;
+}
 
-  battleFxState() {
+  openBotEditor(botId){
+  if (!TRAINING_BOTS.some(bot=>bot.id===botId)) return;
+  this.botEditId=botId;
+  this.botEditCategory='head';
+  this.screen='bot-editor';
+  this.render();
+  window.scrollTo({top:0,behavior:'instant'});
+}
+
+  botEditorMarkup(){
+  const bot=getTrainingBot(this.botEditId);
+  const mech=this.pilot.trainingMech(bot.id);
+  const stats=getTrainingBotStats(bot.id,mech);
+  const category=CATEGORIES.find(cat=>cat.id===this.botEditCategory)||CATEGORIES[0];
+  const tabs=CATEGORIES.map(cat=>`<button class="category-tab ${cat.id===category.id?'is-active':''}" data-action="bot-edit-category" data-value="${cat.id}" aria-pressed="${cat.id===category.id}"><span class="category-icon">${cat.icon}</span><span>${cat.label}</span></button>`).join('');
+  const styles=STYLES.map(style=>`<button class="style-card style-${style.id} ${mech.selection.style===style.id?'is-active':''}" data-action="bot-edit-style" data-value="${style.id}" aria-pressed="${mech.selection.style===style.id}"><span class="style-symbol">${style.icon}</span><span class="style-title">${style.label}</span></button>`).join('');
+  const cards=category.id==='color'
+    ? `<div class="colors-grid">${COLORS.filter(c=>!c.onlineOnly).map(color=>`<button class="color-card ${mech.selection.color===color.id?'is-equipped':''}" data-action="bot-edit-color" data-value="${color.id}" aria-label="Gegnerfarbe ${color.label}" aria-pressed="${mech.selection.color===color.id}"><span class="color-dot" style="background:${color.primary}">${mech.selection.color===color.id?'✓':''}</span></button>`).join('')}</div>`
+    : `<div class="part-grid">${PARTS[category.id].map(part=>`<button class="part-card ${mech.selection[category.id]===part.id?'is-equipped':''}" data-action="bot-edit-part" data-value="${part.id}" aria-pressed="${mech.selection[category.id]===part.id}" aria-label="${part.name} für Gegner">${mech.selection[category.id]===part.id?'<span class="equipped-mark">✓</span>':''}<span class="part-art">${MechRenderer.draw(mech.withPart(category.id,part.id),{viewBox:category.viewBox,label:part.name})}</span><span class="part-name">${part.name}</span><span class="part-cost owned">${mech.selection[category.id]===part.id?'✅':'🔧'}</span></button>`).join('')}</div>`;
+  return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.8</small></span></div>${this.starBank()}</header>
+    <main class="bot-builder"><div class="training-top"><button class="back-button" data-action="bot-edit-back">⬅️ Alle Bots</button><div class="round-label">🛠️ Gegner bauen</div></div>
+    <h1 class="section-title">${bot.icon} ${bot.label} ausrüsten</h1>
+    <div class="hangar-stage bot-builder-stage">${MechRenderer.draw(mech)}</div>
+    <div class="bot-builder-stats"><span>❤️ ${stats.hp}</span><span>⚔️ ${stats.attackMin}–${stats.attackMax}</span><span>🛡️ ${stats.armor}</span></div>
+    <p class="bot-builder-note">✨ Alle Teile sind für Trainingsgegner kostenlos. Die Ausrüstung verändert die Trainingswerte. Dein eigener Mech und deine Sterne bleiben unverändert.</p>
+    <div class="style-row" role="group" aria-label="Gegner-Spielstil">${styles}</div>
+    <section class="builder" aria-label="Trainingsgegner ausrüsten"><div class="category-tabs">${tabs}</div>
+      <div class="part-heading"><span>${category.icon} ${category.label} auswählen</span><small>👆 Tippen!</small></div>${cards}</section>
+    <button class="primary-action" data-action="bot-edit-fight">⚔️ Gegen ${bot.label} kämpfen</button>
+    <button class="bot-builder-reset" data-action="bot-edit-reset">↩️ Originalausstattung wiederherstellen</button>
+    <button class="online-small" data-action="bot-edit-back">⬅️ Zur Gegnerauswahl</button></main>`;
+}
+
+    battleFxState() {
     const event = this.battle?.lastEvent || {};
     const playerClass = event.actor === 'player' && ['hit', 'miss', 'special'].includes(event.kind) ? 'is-attacking'
       : event.actor === 'bot' && event.kind === 'hit' ? 'is-hit'
@@ -562,7 +627,7 @@ class MechFriendsApp {
         <button class="battle-button shield" data-action="shield" ${blocked ? 'disabled' : ''} aria-label="Mit Schild schützen"><span class="battle-icon">🛡️</span><span>Schutz</span></button>
         <button class="battle-button special" data-action="special" ${blocked || !b.specialReady ? 'disabled' : ''} aria-label="Spezialangriff ${b.specialReady ? 'bereit' : 'lädt sich auf'}"><span class="battle-icon">⚡</span><span>Spezial</span>${power}</button>
       </div>`;
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.7</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v0.8</small></span></div>${this.starBank()}</header>
       <main>
         <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Baukasten"><span>⬅️</span> Hangar</button><div class="round-label">🎯 Training</div></div>
         <h1 class="section-title">⚔️ ${b.bot.icon} ${b.bot.label}</h1>
@@ -587,8 +652,8 @@ class MechFriendsApp {
   startTraining(botId = this.botId) {
     this.stopBot();
     this.botId = TRAINING_BOTS.some(bot => bot.id === botId) ? botId : 'scout';
-    this.enemy = makeTrainingMech(this.botId);
-    this.battle = new TrainingBattle(this.pilot.mech, this.botId);
+    this.enemy = this.pilot.trainingMech(this.botId);
+    this.battle = new TrainingBattle(this.pilot.mech, this.botId, Math.random, this.enemy);
     this.rewardApplied = false;
     if (this.screen === 'hangar') {
       history.pushState({ mechFriendsScreen: 'train' }, '', `${location.pathname}${location.search}#training`);

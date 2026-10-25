@@ -1,3 +1,10 @@
+## v0.8 – Gegner-Baukasten und Rückkampf ablehnen
+
+- Trainingsbots erhalten unabhängige, lokal gespeicherte Ausrüstungen (Köpfe, Waffen, Panzerung, Beine, Zubehör, Farben, Stil).
+- Angepasste Trainingswerte bleiben begrenzt und wirken sich nicht auf Online-Duelle aus.
+- Rückkampf kann ausdrücklich abgelehnt werden; beide Spieler sehen den Status.
+- Keine Änderung an bisherigen Spielständen, Online-Punkten oder Supabase-Konfiguration.
+
 # Änderungen
 
 ## v0.6 – Werkstatt, Rückkampf und Bestenliste

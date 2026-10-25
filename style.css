@@ -379,3 +379,20 @@ button:focus-visible { outline: 3px solid #48d5ff; outline-offset: 3px; }
 .online-quick-nav{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:3px 0 16px}
 .online-quick-link{min-height:54px;padding:8px 5px;font-size:15px;font-weight:1000;border-radius:14px;border:2px solid #718fbd;color:#f3f7ff;background:#253a60}
 .online-forfeit{display:block;width:100%;min-height:48px;margin:17px 0 5px;border:2px solid #a87e86;border-radius:14px;background:#392b3d;color:#ffdcdf;font-size:15px;font-weight:900}
+
+/* v0.8: selbst gestaltete Trainingsgegner und Rückkampf ablehnen */
+.opponent-builder-intro { font-size:15px; color:#c7f2ff; font-weight:900; text-align:center; margin:5px 0 16px; }
+.opponent-card-wrap { border:1px solid #516d9b; border-radius:22px; padding:0 0 8px; background:#182744; }
+.opponent-card-wrap .opponent-card { border-bottom-left-radius:14px; border-bottom-right-radius:14px; }
+.opponent-edit { display:block; width:calc(100% - 20px); margin:10px auto 3px; min-height:50px; padding:9px 12px; border:2px solid #92b8ec; border-radius:14px; background:#324f7a; color:#fff; font-size:16px; font-weight:1000; }
+.opponent-edit:active { transform:translateY(2px); }
+.bot-builder-stage { min-height:295px; max-height:420px; }
+.bot-builder-stage .mech-picture { max-height:390px; }
+.bot-builder-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; margin:10px 0; }
+.bot-builder-stats span { display:grid; place-items:center; min-height:52px; background:#243e66; border:1px solid #8db7e9; border-radius:13px; font-weight:1000; font-size:16px; }
+.bot-builder-note { background:#1c3455; border-left:4px solid #70dcbf; padding:12px; border-radius:9px; color:#d2e7ff; line-height:1.45; font-size:14px; }
+.bot-builder-reset { display:block; width:100%; margin:15px 0; padding:13px 8px; border:1px solid #a6a9c0; border-radius:12px; background:#31354b; color:#e4e7f4; font-weight:900; font-size:14px; }
+.rematch-choices { display:flex; flex-direction:column; gap:6px; }
+.rematch-decline { border-color:#e9b9c3; background:linear-gradient(180deg,#734554,#533543); box-shadow:0 4px 0 #2c1a26; }
+.rematch-declined { background:#392d44; border:1px solid #d3a9b7; border-radius:12px; padding:13px; font-weight:900; color:#ffe3ea!important; }
+@media (max-width:360px) { .opponent-edit { font-size:14px; } .bot-builder-stats span { font-size:13px; } }

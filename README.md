@@ -50,3 +50,10 @@ Du kannst die App auch weiterhin **vollständig offline trainieren**. Online-Pun
 ### Installation
 
 Alle Dateien im Repo-Hauptverzeichnis. PWA-Service-Worker nutzt `mech-freunde-v06-gear-rematch-profiles`, JS/CSS werden network-first aktualisiert.
+
+
+## Neu in v0.8
+
+- Trainingsgegner (Flitzer, Wächter und Blitz) separat bauen und ausrüsten; ihre Mechs werden lokal gespeichert.
+- Nach dem Online-Duell einen Rückkampf annehmen oder mit „Nein, danke“ ablehnen.
+- Geplante Funktionen: siehe [TODO.md](TODO.md).

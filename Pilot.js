@@ -1,5 +1,6 @@
 import { Mech } from './Mech.js';
-import { PARTS, partKey, findPart } from './Parts.js';
+import { PARTS, COLORS, STYLES, partKey, findPart } from './Parts.js';
+import { TRAINING_BOTS, getTrainingBot } from './TrainingBots.js';
 
 export class Pilot {
   constructor(data = {}) {
@@ -15,6 +16,14 @@ export class Pilot {
         values.some(part => partKey(cat, part.id) === key)
       )
     )]);
+    this.trainingBots = {};
+    for (const bot of TRAINING_BOTS) {
+      const saved = data.trainingBots?.[bot.id];
+      if (saved && typeof saved === 'object' && !Array.isArray(saved)) {
+        const selection = new Mech({ ...bot.mech, ...saved }).toJSON();
+        if (COLORS.some(c => c.id === selection.color && !c.onlineOnly)) this.trainingBots[bot.id] = selection;
+      }
+    }
   }
 
   owns(category, id) {
@@ -36,6 +45,29 @@ export class Pilot {
     return { ok: true, part };
   }
 
+  trainingMech(botId) {
+    return new Mech(this.trainingBots[botId] || getTrainingBot(botId).mech);
+  }
+
+  equipTrainingBot(botId, category, id) {
+    if (!TRAINING_BOTS.some(bot => bot.id === botId)) return false;
+    if (category === 'color') {
+      if (!COLORS.some(color => color.id === id && !color.onlineOnly)) return false;
+    } else if (category === 'style') {
+      if (!STYLES.some(style => style.id === id)) return false;
+    } else if (!findPart(category, id)) return false;
+    const mech = this.trainingMech(botId);
+    mech.equip(category, id);
+    this.trainingBots[botId] = mech.toJSON();
+    return true;
+  }
+
+  resetTrainingBot(botId) {
+    if (!TRAINING_BOTS.some(bot => bot.id === botId)) return false;
+    delete this.trainingBots[botId];
+    return true;
+  }
+
   finishTraining(won, usedSpecial = false, winReward = 6) {
     this.practiceCount += 1;
     if (won) {
@@ -48,7 +80,7 @@ export class Pilot {
   }
 
   toJSON() {
-    return { version: 2, mech: this.mech.toJSON(), stars: this.stars,
-      wins: this.wins, specialWins: this.specialWins, practiceCount: this.practiceCount, owned: [...this.owned] };
+    return { version: 3, mech: this.mech.toJSON(), stars: this.stars,
+      wins: this.wins, specialWins: this.specialWins, practiceCount: this.practiceCount, owned: [...this.owned], trainingBots: this.trainingBots };
   }
 }

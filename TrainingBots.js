@@ -27,6 +27,19 @@ export function getTrainingBot(id) {
   return TRAINING_BOTS.find(bot => bot.id === id) || TRAINING_BOTS[0];
 }
 
+// Optische Änderungen beeinflussen nur die Offline-Trainingswerte, nicht Online-Duelle.
+export function getTrainingBotStats(id, enemyMech = null) {
+  const bot = getTrainingBot(id);
+  const base = new Mech(bot.mech).stats;
+  const equipped = enemyMech instanceof Mech ? enemyMech.stats : base;
+  const hp = Math.max(45, Math.min(160, bot.hp + Math.round((equipped.hp - base.hp) * 0.65)));
+  const armor = Math.max(0, Math.min(9, bot.armor + (equipped.armor - base.armor)));
+  const damage = Math.max(-5, Math.min(9, Math.round((equipped.attack - base.attack) * 0.5)));
+  const dodge = Math.max(0, Math.min(0.35, bot.dodge + equipped.dodge - base.dodge));
+  return { ...bot, hp, armor, attackMin:Math.max(4,bot.attackMin+damage),
+    attackMax:Math.max(8,bot.attackMax+damage), dodge };
+}
+
 export function makeTrainingMech(id) {
   return new Mech(getTrainingBot(id).mech);
 }
