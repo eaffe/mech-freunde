@@ -50,6 +50,8 @@ class MechFriendsApp {
     this.tournament=null;
     this.tournamentCode='';
     this.cloudOwner=null;
+    this.localAccountOwner=null;
+    this.localDirty=false;
     this.inviteCode=null;
     this.invitedTournament=null;
     this.tourneyPollTick=0;
@@ -62,6 +64,7 @@ class MechFriendsApp {
     try {
       const saved = await this.store.load();
       this.pilot = new Pilot(saved || {});
+      this.localAccountOwner=await this.store.load('pilot-owner')||null;
     } catch (error) {
       console.error('Lokaler Speicher nicht verfügbar:', error);
       // Im Fehlerfall ist das Spiel trotzdem testbar, der Nutzer wird informiert.
@@ -93,13 +96,14 @@ class MechFriendsApp {
 
   save() {
     const snapshot = this.pilot.toJSON();
+    this.localDirty=true;
     const saveOwner=this.cloudOwner;
     this.saving = this.saving.catch(() => {}).then(async () => {
       await this.store.save(snapshot);
       if(saveOwner && saveOwner===this.cloudOwner) {
         try {
           const account=await this.online.getAccount();
-          if(account?.id===saveOwner)await this.online.saveGame(snapshot);
+          if(account?.id===saveOwner){await this.online.saveGame(snapshot);this.localDirty=false;}
         } catch(e) {console.warn('Cloud-Backup aufgeschoben:',e.message);}
       }
     });
@@ -540,11 +544,21 @@ class MechFriendsApp {
     const user=this.onlineAccount;
     if(!user||user.is_anonymous||this.cloudOwner===user.id)return;
     try {
+      await this.saving.catch(()=>{});
       const cloud=await this.online.game();
-      if(cloud?.game?.mech){
+      const sameAccount=this.localAccountOwner===user.id;
+      if(sameAccount && this.localDirty){
+        // Changes from this device since launch stay authoritative after an offline session.
+        await this.online.saveGame(this.pilot.toJSON());
+      } else if(cloud?.game?.mech){
         this.pilot=new Pilot(cloud.game);
         await this.store.save(this.pilot.toJSON());
-      } else await this.online.saveGame(this.pilot.toJSON());
+      } else {
+        await this.online.saveGame(this.pilot.toJSON());
+      }
+      this.localAccountOwner=user.id;
+      await this.store.save(user.id,'pilot-owner');
+      this.localDirty=false;
       this.cloudOwner=user.id;
     } catch(e){console.warn('Cloud-Synchronisation:',e.message);this.showToast('☁️ Cloud-Speicherung vorübergehend nicht möglich');}
   }
@@ -735,7 +749,8 @@ class MechFriendsApp {
       this.onlineProfile=await this.online.rpc('mf5_profile');this.showToast('🔐 Angemeldet!');
     }else if(action==='online-account-logout'){
       if(!window.confirm('Von diesem Konto abmelden? Deine Cloud-Daten bleiben erhalten.'))return;
-      await this.online.logoutToGuest();this.cloudOwner=null;
+      await this.online.logoutToGuest();this.cloudOwner=null;this.localAccountOwner=null;this.localDirty=false;
+      await this.store.save(null,'pilot-owner');
       this.onlineAccount=await this.online.getAccount();
       this.pilot=new Pilot(await this.store.load('pilot-guest')||{});
       await this.store.save(this.pilot.toJSON());

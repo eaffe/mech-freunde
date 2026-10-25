@@ -35,4 +35,4 @@ Projekt **Mech Game for Kids** (Supabase-Projekt `iyedecofygidcrjlpcib`). Die Mi
 
 ## Deployment
 
-GitHub Pages auf `main`, alle App-Dateien im Repository-Hauptverzeichnis. Service Worker `mech-freunde-v10-social-garage-arms-v1` aktualisiert den Cache. `online-config.js` ist die **öffentliche Publishable-Key-Konfiguration**, niemals `service_role` oder geheime Keys an die PWA geben.
+GitHub Pages auf `main`, alle App-Dateien im Repository-Hauptverzeichnis. Service Worker `mech-freunde-v10-account-cloud-offline-sync-v2` aktualisiert den Cache. `online-config.js` ist die **öffentliche Publishable-Key-Konfiguration**, niemals `service_role` oder geheime Keys an die PWA geben.

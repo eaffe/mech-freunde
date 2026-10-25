@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mech-freunde-v10-social-garage-arms-v1';
+const CACHE_NAME = 'mech-freunde-v10-account-cloud-offline-sync-v2';
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './Parts.js',
   './Mech.js', './Pilot.js', './Renderer.js', './Store.js', './TrainingBattle.js', './TrainingBots.js',
