@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mech-freunde-v13-web-push';
+const CACHE_NAME = 'mech-freunde-v13-web-push-open-fix';
 const ASSETS = [
   './', './index.html', './style.css', './app.js', './Parts.js',
   './Mech.js', './Pilot.js', './Renderer.js', './Store.js', './TrainingBattle.js', './TrainingBots.js',
@@ -63,6 +63,7 @@ self.addEventListener('notificationclick', event => {
     const windows=await clients.matchAll({ type:'window', includeUncontrolled:true });
     for (const client of windows) {
       if (client.url.startsWith(self.registration.scope)) {
+        if (typeof client.navigate === 'function') await client.navigate(target);
         await client.focus();
         return;
       }

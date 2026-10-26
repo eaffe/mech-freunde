@@ -316,6 +316,8 @@ class MechFriendsApp {
     if(this.inviteCode){void this.openOnline();}
     else if(this.invitedTournament){
       void this.openOnline().then(()=>{this.closeOnlineSubpages();this.onlineTournamentOpen=true;this.render();});
+    } else if(location.hash==='#online') {
+      void this.openOnline();
     }
   }
 
