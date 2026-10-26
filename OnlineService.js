@@ -112,6 +112,17 @@ export class OnlineService {
   async inviteFriend(userId,matchId){return this.rpc('mf10_invite_friend',{p_receiver:userId,p_match:matchId});}
   async pendingInvites(){return this.rpc('mf10_pending_invites');}
   async acceptInvite(id,look){return this.rpc('mf10_accept_invite',{p_invite:id,p_look:look});}
+  async declineInvite(id){return this.rpc('mf13_decline_invite',{p_invite:id});}
+  async pushKey(){return this.rpc('mf13_push_key');}
+  async registerPush(subscription){
+    const data=subscription.toJSON();
+    if(!subscription.endpoint || !data?.keys?.p256dh || !data?.keys?.auth)
+      throw new Error('Push-Abonnement nicht gültig.');
+    return this.rpc('mf13_push_subscribe',{
+      p_endpoint:subscription.endpoint,p_p256dh:data.keys.p256dh,p_auth:data.keys.auth
+    });
+  }
+  async unregisterPush(endpoint){return this.rpc('mf13_push_unsubscribe',{p_endpoint:endpoint});}
   async newTournament(look){return this.rpc('mf10_tourney_create',{p_look:look});}
   async joinTournament(code,look){return this.rpc('mf10_tourney_join',{p_code:code,p_look:look});}
   async tournamentState(code){return this.rpc('mf10_tourney_state',{p_code:code});}

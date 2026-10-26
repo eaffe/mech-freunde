@@ -58,6 +58,11 @@ class MechFriendsApp {
     this.onlinePollTimer = null;
     this.onlinePolling = false;
     this.onlineDismissedMatch = null;
+    this.pushSupported=typeof window.Notification !== 'undefined' &&
+      'serviceWorker' in navigator && 'PushManager' in window;
+    this.pushEnabled=false;
+    this.pushBusy=false;
+    this.pushError='';
     this.welcomeBusy = false;
     this.welcomeError = '';
     this.welcomeLoginMode = false;
@@ -426,7 +431,7 @@ class MechFriendsApp {
         }).join('')}</div>`;
 
     return `<header class="topbar">
-      <div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2.1</small></span></div>
+      <div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.3</small></span></div>
       ${this.starBank()}
     </header>
     <main>
@@ -484,7 +489,7 @@ class MechFriendsApp {
     const p = this.onlineProfile;
     const b = this.onlineMatch;
     const busy = this.onlineBusy;
-    const header = `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2.1</small></span></div>${this.starBank()}</header>
+    const header = `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.3</small></span></div>${this.starBank()}</header>
       <main><div class="training-top"><button class="back-button" data-action="online-back" aria-label="Zurück zum Hangar"><span>⬅️</span> Hangar</button>
       <div class="round-label">🌍 Privat</div></div><h1 class="section-title">🌍 Freunde-Duell</h1>`;
     if (!this.online.configured) return `${header}
@@ -503,7 +508,13 @@ class MechFriendsApp {
         <button class="online-quick-link ${this.onlineFriendsOpen?'is-active':''}" data-action="online-friends">👥 Freunde${this.onlineInvites.length?' ('+this.onlineInvites.length+')':''}</button>
         <button class="online-quick-link ${this.onlineAccountOpen?'is-active':''}" data-action="online-account">🔐 Konto</button>
         <button class="online-quick-link ${this.onlineTournamentOpen?'is-active':''}" data-action="online-tourney">🏆 Turnier</button>
-      </nav>`;
+      </nav>
+      ${this.pushSupported ? `<section class="push-settings" aria-label="Duell-Benachrichtigungen">
+        <span>${this.pushEnabled?'✅ Benachrichtigungen sind aktiv':'🔔 Auch bei geschlossener Spielseite Bescheid bekommen'}</span>
+        <button class="online-small" data-action="${this.pushEnabled?'online-push-disable':'online-push-enable'}"
+          ${this.pushBusy?'disabled':''}>${this.pushEnabled?'🔕 Ausschalten':'🔔 Aktivieren'}</button>
+        ${this.pushError?`<p class="push-note">${safeText(this.pushError)}</p>`:''}
+      </section>` : '<p class="push-note">🔕 Push wird von diesem Browser nicht unterstützt. Auf iPhones muss Mech-Freunde zuerst zum Home-Bildschirm hinzugefügt werden.</p>'}`;
     if(this.onlineHistoryOpen)return this.onlineHistoryMarkup(header,bank,busy);
     if(this.onlineAccountOpen)return this.onlineAccountMarkup(header,bank,busy);
     if(this.onlineFriendsOpen)return this.onlineFriendsMarkup(header,bank,busy);
@@ -620,7 +631,7 @@ class MechFriendsApp {
       <div class="room-code" aria-label="Mein Freundescode">${safeText(this.onlineFriendCode||'Lade …')}</div>
       <div class="account-form"><label>Freundescode eingeben <input id="friend-code-input" maxlength="8" autocapitalize="characters" autocomplete="off" placeholder="A1B2C3D4" /></label>
       <button class="online-wide" data-action="online-friend-add" ${busy?'disabled':''}>➕ Freund hinzufügen</button></div>
-      ${this.onlineInvites.length?`<h3>💌 Einladungen zu Duellen</h3><div class="friends-rows">${this.onlineInvites.map(i=>`<div class="friend-row"><span>${safeText(i.avatar)} ${safeText(i.name)} lädt dich ein!</span><button data-action="online-friend-join" data-value="${safeText(i.id)}">⚔️ Annehmen</button></div>`).join('')}</div>`:''}
+      ${this.onlineInvites.length?`<h3>💌 Einladungen zu Duellen</h3><div class="friends-rows">${this.onlineInvites.map(i=>`<div class="friend-row"><span>${safeText(i.avatar)} ${safeText(i.name)} lädt dich ein!</span><button data-action="online-friend-join" data-value="${safeText(i.id)}">⚔️ Annehmen</button><button data-action="online-friend-decline" data-value="${safeText(i.id)}">🙅 Ablehnen</button></div>`).join('')}</div>`:''}
       ${this.onlineFriends.length?`<div class="friends-rows">${this.onlineFriends.map(f=>`<div class="friend-row"><span>${safeText(f.avatar)} <strong>${safeText(f.nickname)}</strong> <small>${f.accepted?'✅ Freunde':f.incoming?'💌 Anfrage':'⏳ Angefragt'}</small></span>
        <div>${f.accepted && this.onlineMatch?.status==='waiting'?`<button data-action="online-friend-invite" data-value="${safeText(f.id)}">💌 Duell</button>`:''}${!f.accepted&&f.incoming?`<button data-action="online-friend-accept" data-value="${safeText(f.id)}">✅ Annehmen</button>`:''}
        <button data-action="online-friend-remove" data-value="${safeText(f.id)}" aria-label="Freund entfernen">✖️</button></div></div>`).join('')}</div>`:'<p>Hier erscheinen deine Freunde und Anfragen.</p>'}
@@ -673,6 +684,57 @@ class MechFriendsApp {
          <button class="online-small" data-action="online-leaderboard-back">⬅️ ${b?'Zurück zum Duell':'Zurück zur Übersicht'}</button></div></main>`;
   }
 
+
+  async refreshPushState(){
+    if(!this.pushSupported)return;
+    try{
+      const registration=await navigator.serviceWorker.ready;
+      const subscription=await registration.pushManager.getSubscription();
+      this.pushEnabled=Boolean(subscription && Notification.permission==='granted');
+      if(this.pushEnabled)await this.online.registerPush(subscription);
+      if(this.screen==='online')this.render();
+    }catch(error){console.warn('Push-Status:',error.message);}
+  }
+  async enablePush(){
+    if(!this.pushSupported){this.pushError='Dieser Browser bietet keine Push-Benachrichtigungen.';this.render();return;}
+    if(this.pushBusy)return;
+    this.pushBusy=true;this.pushError='';this.render();
+    try{
+      // Permission request directly from the click gesture.
+      const permission=await Notification.requestPermission();
+      if(permission!=='granted')throw new Error('Bitte Benachrichtigungen in den Browsereinstellungen erlauben.');
+      const registration=await navigator.serviceWorker.register('./service-worker.js');
+      const key=await this.online.pushKey();
+      const bytes=Uint8Array.from(atob(key.replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-key.length%4)%4)),c=>c.charCodeAt(0));
+      let subscription=await registration.pushManager.getSubscription();
+      if(!subscription)subscription=await registration.pushManager.subscribe({
+        userVisibleOnly:true,applicationServerKey:bytes
+      });
+      await this.online.registerPush(subscription);
+      this.pushEnabled=true;
+      this.showToast('🔔 Benachrichtigungen aktiviert!');
+    }catch(error){
+      this.pushError=error.message||'Push konnte nicht eingerichtet werden.';
+      this.showToast('🔕 Push nicht aktiviert');
+    }finally{this.pushBusy=false;if(this.screen==='online')this.render();}
+  }
+  async disablePush(silent=false){
+    if(!this.pushSupported)return;
+    this.pushBusy=true;
+    try{
+      const registration=await navigator.serviceWorker.ready;
+      const subscription=await registration.pushManager.getSubscription();
+      if(subscription){
+        await this.online.unregisterPush(subscription.endpoint);
+        await subscription.unsubscribe();
+      }
+      this.pushEnabled=false;this.pushError='';
+      if(!silent)this.showToast('🔕 Benachrichtigungen ausgeschaltet');
+    }catch(error){
+      this.pushError='Ausschalten gerade nicht möglich. Bitte erneut versuchen.';
+      if(!silent)this.showToast(this.pushError);
+    }finally{this.pushBusy=false;if(this.screen==='online')this.render();}
+  }
   stopOnlinePoll() { clearInterval(this.onlinePollTimer); this.onlinePollTimer=null; }
   startOnlinePoll() {
     this.stopOnlinePoll();
@@ -694,6 +756,7 @@ class MechFriendsApp {
       }
       this.onlineProfile=data.profile; this.onlineMatch=data.match?.status==='finished' && data.match.id===this.onlineDismissedMatch ? null : data.match;
       this.onlineAccount=await this.online.getAccount();
+      void this.refreshPushState();
       try{this.onlineInvites=await this.online.pendingInvites();}catch(_){}
       await this.syncCloudGame();
       if(this.inviteCode&&!this.onlineMatch&&this.onlineAccount?.is_anonymous)this.onlineAccountOpen=true;
@@ -757,6 +820,8 @@ class MechFriendsApp {
   }
   async handleOnlineAction(action, button) {
     if (action==='online-back') { this.stopOnlinePoll(); this.screen='hangar'; this.render(); return; }
+    if(action==='online-push-enable'){void this.enablePush();return;}
+    if(action==='online-push-disable'){void this.disablePush();return;}
     if(action==='online-whatsapp' || action==='online-tourney-share') {
       const code=action==='online-whatsapp'?this.onlineMatch?.code:this.tournament?.code;
       if(!code)return;
@@ -825,6 +890,10 @@ class MechFriendsApp {
         if(this.onlineMatch?.status!=='waiting')throw new Error('Erstelle zuerst eine Arena.');
         await this.online.inviteFriend(button.dataset.value,this.onlineMatch.id);
         this.showToast('💌 Einladung an Freund gesendet!');
+      } else if(action==='online-friend-decline') {
+        await this.online.declineInvite(button.dataset.value);
+        this.onlineInvites=await this.online.pendingInvites();
+        this.showToast('🙅 Einladung abgelehnt');
       } else if(action==='online-friend-join') {
         const value=await this.online.acceptInvite(button.dataset.value,this.pilot.mech.selection);
         if(value?.error)throw new Error('Diese Einladung ist nicht mehr gültig.');
@@ -917,6 +986,7 @@ class MechFriendsApp {
       this.onlineProfile=await this.online.rpc('mf5_profile');this.showToast('🔐 Angemeldet!');
     }else if(action==='online-account-logout'){
       if(!window.confirm('Von diesem Konto abmelden? Deine Cloud-Daten bleiben erhalten.'))return;
+      await this.disablePush(true);
       await this.online.logoutToGuest();this.cloudOwner=null;this.localAccountOwner=null;this.localDirty=false;
       await this.store.save(null,'pilot-owner');
       this.onlineAccount=await this.online.getAccount();
@@ -953,7 +1023,7 @@ class MechFriendsApp {
   }
 
   chooseMarkup() {
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2.1</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.3</small></span></div>${this.starBank()}</header>
       <main>
         <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Hangar"><span>⬅️</span> Hangar</button>
           <div class="round-label">🎯 Training</div></div>
@@ -1004,7 +1074,7 @@ class MechFriendsApp {
         <span class="part-art">${MechRenderer.draw(mech.withPart(category.id,part.id),{viewBox:category.viewBox,label:part.name})}</span>
         <span class="part-name">${part.name}</span><span class="part-cost owned">${mech.selection[category.id]===part.id?'✅':'🔧'}</span>
       </button>`).join('')}</div>`;
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2.1</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.3</small></span></div>${this.starBank()}</header>
       <main class="bot-builder"><div class="training-top"><button class="back-button" data-action="bot-edit-back">⬅️ Alle Gegner</button>
       <div class="round-label">🛠️ Gegner-Baukasten</div></div>
       <h1 class="section-title">${bot.icon} ${bot.label} ausrüsten</h1>
@@ -1067,7 +1137,7 @@ class MechFriendsApp {
         <button class="battle-button shield" data-action="shield" ${blocked ? 'disabled' : ''} aria-label="Mit Schild schützen"><span class="battle-icon">🛡️</span><span>Schutz</span></button>
         <button class="battle-button special" data-action="special" ${blocked || !b.specialReady ? 'disabled' : ''} aria-label="Spezialangriff ${b.specialReady ? 'bereit' : 'lädt sich auf'}"><span class="battle-icon">⚡</span><span>Spezial</span>${power}</button>
       </div>`;
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2.1</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.3</small></span></div>${this.starBank()}</header>
       <main>
         <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Baukasten"><span>⬅️</span> Hangar</button><div class="round-label">🎯 Training</div></div>
         <h1 class="section-title">⚔️ ${b.bot.icon} ${b.bot.label}</h1>

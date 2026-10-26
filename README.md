@@ -1,6 +1,15 @@
-# Mech-Freunde v1.2.1 – Gegner-Baukasten repariert
+# Mech-Freunde v1.3 – Push-Benachrichtigungen und Duell-Einladungen
 
 Kindgerechte, mobil nutzbare PWA ohne Frameworks. Privatduelle über Supabase, Training auch offline. Bestehende Spielstände, Sterne, Pokale, Profile und Online-Punkte bleiben erhalten.
+
+## Web Push v1.3
+- Im Online-Bereich **„🔔 Aktivieren“** antippen und Browser-Berechtigung erlauben.
+- Funktioniert bei geschlossener Spielseite über den PWA-Service-Worker, soweit das Gerät Hintergrund-Push unterstützt.
+- Neue Freundeseinladungen, Annahme per Raumcode oder Freundeseinladung, Ablehnungen und Rückkampf-Reaktionen lösen serverseitige Push-Nachrichten aus.
+- Per Gerät getrennt aktivierbar und jederzeit ausschaltbar; keine Namen oder Raumcodes im Nachrichtentext.
+- Auf iOS/iPadOS ab 16.4 muss Mech-Freunde zuvor zum Home-Bildschirm hinzugefügt werden.
+- Es wird nur ein generischer Hinweis angezeigt; das Spiel zeigt nach Öffnen die konkreten Details.
+- Die Web-Push-Subscriptions werden in Supabase hinter RLS gespeichert; VAPID-Schlüssel und Webhook-Token liegen in Supabase Vault.
 
 ## Neuer Start in v1.2
 - Beim ersten Start wird ein Fantasiename und eine Eltern-E-Mail-Adresse abgefragt. Bestehende Profile mit selbst gewähltem Namen werden nicht erneut gefragt.

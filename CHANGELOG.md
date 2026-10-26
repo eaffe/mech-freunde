@@ -1,5 +1,13 @@
 # Änderungen
 
+## v1.3 – Push-Benachrichtigungen für Duell-Einladungen
+- Freiwillige Browser-Push-Anmeldung pro Gerät im Online-Bereich, auch bei geschlossenem Tab.
+- Eingehende Freundeseinladung, Annahme, Ablehnung und Rückkampf-Reaktionen lösen serverseitige Benachrichtigungen aus.
+- Eigenständiger „🙅 Ablehnen“-Knopf für Freundes-Duelleinladungen.
+- Service Worker öffnet auf Benachrichtigungstipp das Spiel.
+- Geschützte Supabase-Subscriptions, VAPID-Schlüssel in Vault, Edge-Funktion mit internem Webhook-Token.
+- Keine persönlichen Daten im Push-Text; Versandlimit gegen Nachrichtenflut.
+
 ## v1.2.1 – Gegner-Baukasten repariert
 - Fehlenden Import der Gegnerwerte wiederhergestellt: „Bauen & ausrüsten“ öffnet nun den Gegner-Baukasten.
 - Linker und rechter Arm nutzen wieder den Waffen-Katalog und lassen sich getrennt ausstatten (auch beim eigenen Mech).
