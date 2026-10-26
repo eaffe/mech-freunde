@@ -95,6 +95,7 @@ export const STARTER_SELECTION = Object.freeze({
   head: 'smile', body: 'heart', arms: 'hands', leftArm: 'hands', rightArm: 'hands', legs: 'boots', gear: 'none', color: 'mint', style: 'light'
 });
 
-export const findPart = (category, id) => PARTS[category]?.find(part => part.id === id) || null;
+export const partCategory = category => category === 'leftArm' || category === 'rightArm' ? 'arms' : category;
+export const findPart = (category, id) => PARTS[partCategory(category)]?.find(part => part.id === id) || null;
 export const findColor = id => COLORS.find(color => color.id === id) || COLORS[0];
 export const partKey = (category, id) => `${category}:${id}`;

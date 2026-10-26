@@ -1,4 +1,4 @@
-# Mech-Freunde v1.2 – Ersteinrichtung, Mech-Garage und Freunde
+# Mech-Freunde v1.2.1 – Gegner-Baukasten repariert
 
 Kindgerechte, mobil nutzbare PWA ohne Frameworks. Privatduelle über Supabase, Training auch offline. Bestehende Spielstände, Sterne, Pokale, Profile und Online-Punkte bleiben erhalten.
 

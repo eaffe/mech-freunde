@@ -1,5 +1,10 @@
 # Änderungen
 
+## v1.2.1 – Gegner-Baukasten repariert
+- Fehlenden Import der Gegnerwerte wiederhergestellt: „Bauen & ausrüsten“ öffnet nun den Gegner-Baukasten.
+- Linker und rechter Arm nutzen wieder den Waffen-Katalog und lassen sich getrennt ausstatten (auch beim eigenen Mech).
+- PWA-Cache aktualisiert; alle vorhandenen Spielstände und Online-Duelle bleiben erhalten.
+
 ## v1.2 – Ersteinrichtung und sofortiges Spielerprofil
 - Erster Besuch: Fantasiename, Eltern-E-Mail und freiwillige Bestenlisten-Zustimmung direkt vor dem Spielen.
 - Der Benutzername wird sofort ins Supabase-Profil gespeichert. Bei Zustimmung erscheint das Profil direkt in der Bestenliste, auch mit null Siegen.

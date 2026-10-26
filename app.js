@@ -1,10 +1,10 @@
-import { CATEGORIES, PARTS, COLORS, STYLES } from './Parts.js';
+import { CATEGORIES, PARTS, COLORS, STYLES, partCategory } from './Parts.js';
 import { Mech } from './Mech.js';
 import { MechRenderer } from './Renderer.js';
 import { Pilot } from './Pilot.js';
 import { PilotStore } from './Store.js';
 import { TrainingBattle } from './TrainingBattle.js';
-import { TRAINING_BOTS, getTrainingBot, getAdaptiveTrainingBotStats } from './TrainingBots.js';
+import { TRAINING_BOTS, getTrainingBot, getTrainingBotStats, getAdaptiveTrainingBotStats } from './TrainingBots.js';
 import { OnlineService, ONLINE_PAINTS, ONLINE_AVATARS, NAME_FIRST, NAME_SECOND } from './OnlineService.js';
 
 const safeText = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -412,7 +412,7 @@ class MechFriendsApp {
             aria-label="Farbe ${color.label}${locked ? `, ab ${color.trophyWins} Siegen` : ''}" aria-pressed="${equipped}">
             <span class="color-dot" style="background:${color.primary}">${locked ? '🔒' : equipped ? '✓' : ''}</span></button>`;
         }).join('')}</div>`
-      : `<div class="part-grid">${PARTS[this.category].map(part => {
+      : `<div class="part-grid">${PARTS[partCategory(this.category)].map(part => {
           const selected = this.pilot.mech.selection[this.category] === part.id;
           const owned = this.pilot.owns(this.category, part.id);
           const preview = this.pilot.mech.withPart(this.category, part.id);
@@ -426,7 +426,7 @@ class MechFriendsApp {
         }).join('')}</div>`;
 
     return `<header class="topbar">
-      <div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2</small></span></div>
+      <div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2.1</small></span></div>
       ${this.starBank()}
     </header>
     <main>
@@ -484,7 +484,7 @@ class MechFriendsApp {
     const p = this.onlineProfile;
     const b = this.onlineMatch;
     const busy = this.onlineBusy;
-    const header = `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2</small></span></div>${this.starBank()}</header>
+    const header = `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2.1</small></span></div>${this.starBank()}</header>
       <main><div class="training-top"><button class="back-button" data-action="online-back" aria-label="Zurück zum Hangar"><span>⬅️</span> Hangar</button>
       <div class="round-label">🌍 Privat</div></div><h1 class="section-title">🌍 Freunde-Duell</h1>`;
     if (!this.online.configured) return `${header}
@@ -953,7 +953,7 @@ class MechFriendsApp {
   }
 
   chooseMarkup() {
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2.1</small></span></div>${this.starBank()}</header>
       <main>
         <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Hangar"><span>⬅️</span> Hangar</button>
           <div class="round-label">🎯 Training</div></div>
@@ -998,13 +998,13 @@ class MechFriendsApp {
       ? `<div class="colors-grid">${COLORS.filter(c=>!c.onlineOnly).map(color=>`<button class="color-card ${mech.selection.color===color.id?'is-equipped':''}"
         data-action="bot-edit-color" data-value="${color.id}" aria-label="Gegnerfarbe ${color.label}" aria-pressed="${mech.selection.color===color.id}">
         <span class="color-dot" style="background:${color.primary}">${mech.selection.color===color.id?'✓':''}</span></button>`).join('')}</div>`
-      : `<div class="part-grid">${PARTS[category.id].map(part=>`<button class="part-card ${mech.selection[category.id]===part.id?'is-equipped':''}"
+      : `<div class="part-grid">${PARTS[partCategory(category.id)].map(part=>`<button class="part-card ${mech.selection[category.id]===part.id?'is-equipped':''}"
         data-action="bot-edit-part" data-value="${part.id}" aria-pressed="${mech.selection[category.id]===part.id}" aria-label="${part.name} für Gegner">
         ${mech.selection[category.id]===part.id?'<span class="equipped-mark">✓</span>':''}
         <span class="part-art">${MechRenderer.draw(mech.withPart(category.id,part.id),{viewBox:category.viewBox,label:part.name})}</span>
         <span class="part-name">${part.name}</span><span class="part-cost owned">${mech.selection[category.id]===part.id?'✅':'🔧'}</span>
       </button>`).join('')}</div>`;
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2.1</small></span></div>${this.starBank()}</header>
       <main class="bot-builder"><div class="training-top"><button class="back-button" data-action="bot-edit-back">⬅️ Alle Gegner</button>
       <div class="round-label">🛠️ Gegner-Baukasten</div></div>
       <h1 class="section-title">${bot.icon} ${bot.label} ausrüsten</h1>
@@ -1067,7 +1067,7 @@ class MechFriendsApp {
         <button class="battle-button shield" data-action="shield" ${blocked ? 'disabled' : ''} aria-label="Mit Schild schützen"><span class="battle-icon">🛡️</span><span>Schutz</span></button>
         <button class="battle-button special" data-action="special" ${blocked || !b.specialReady ? 'disabled' : ''} aria-label="Spezialangriff ${b.specialReady ? 'bereit' : 'lädt sich auf'}"><span class="battle-icon">⚡</span><span>Spezial</span>${power}</button>
       </div>`;
-    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2</small></span></div>${this.starBank()}</header>
+    return `<header class="topbar"><div class="brand"><span class="brand-logo">🤖</span><span>MECH-FREUNDE <small class="version-chip">v1.2.1</small></span></div>${this.starBank()}</header>
       <main>
         <div class="training-top"><button class="back-button" data-action="back" aria-label="Zurück zum Baukasten"><span>⬅️</span> Hangar</button><div class="round-label">🎯 Training</div></div>
         <h1 class="section-title">⚔️ ${b.bot.icon} ${b.bot.label}</h1>
